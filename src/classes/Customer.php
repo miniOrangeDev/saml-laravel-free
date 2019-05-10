@@ -16,7 +16,7 @@ use MiniOrange\Helper\DB;
             
             $fields = array (
                     'companyName' => $_SERVER ['SERVER_NAME'],
-                    'areaOfInterest' => 'PHP SAML 2.0 Connector',
+                    'areaOfInterest' => 'Laravel SAML SP Package',
                     'email' => $this->email,
                     'password' => $password 
             );
