@@ -43,8 +43,8 @@ class AuthFacadeController extends Controller
         $pluginSettings = PluginSettings::getPluginSettings();
         $encrypted_mail = $request->email;
         $encrypted_name = $request->name;
-        $this->mailid = urldecode(AESEncryption::decrypt_data($encrypted_mail, "secret"));
-        $this->name = urldecode(AESEncryption::decrypt_data($encrypted_name, "secret"));
+        $this->mailid = urldecode(AESEncryption::decrypt_data($encrypted_mail, "M12K19FV"));
+        $this->name = urldecode(AESEncryption::decrypt_data($encrypted_name, "M12K19FV"));
         if ($this->mailid == '')
             return redirect('');
         $creds = array(

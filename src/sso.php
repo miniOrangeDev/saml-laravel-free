@@ -44,8 +44,8 @@ final class SSO
                     session_start();
                     $_SESSION['email'] = $attrs['NameID'];
                     $_SESSION['username'] = $attrs['NameID'];
-                    $encrypted_mail = urlencode(AESEncryption::encrypt_data($_SESSION['email'][0], "secret"));
-                    $encrypted_name = urlencode(AESEncryption::encrypt_data($_SESSION['username'][0], "secret"));
+                    $encrypted_mail = urlencode(AESEncryption::encrypt_data($_SESSION['email'][0], "M12K19FV"));
+                    $encrypted_name = urlencode(AESEncryption::encrypt_data($_SESSION['username'][0], "M12K19FV"));
                     header('Location: sign?email=' . $encrypted_mail . '&name=' . $encrypted_name);
                     exit();
                 }
