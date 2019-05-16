@@ -96,7 +96,8 @@
 								<div class="thumbnail" style="margin-right:10px">
 									<div class="mo-tab">
 										<h3>Premium</h3>
-										<a class="btn btn-large" id="upgrade_button" style="background-color:#f7934c;color:#fff" href="#customer"  >Upgrade</a>
+										<br>
+										<br>
 										<hr>
 										<script>
 
@@ -115,7 +116,10 @@
 												})
 											}
 										</script>
-										<h4 style="padding-top:5px;">$250<br/>+<br/>Integration cost(optional)</h4>
+										<br>
+										<a class="btn btn-large" id="upgrade_button" style="background-color:#f7934c;color:#fff" href="#customer"  >Upgrade</a>
+										<br>
+										<br>
 										<hr>
 										<p>Unlimited Authentications</p>
 										<p>Configurable SP Base URL</p>
