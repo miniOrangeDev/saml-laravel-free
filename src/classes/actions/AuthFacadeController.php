@@ -1,4 +1,5 @@
 <?php
+
 namespace MiniOrange\Classes\Actions;
 
 use Illuminate\Support\Facades\Session;
@@ -6,7 +7,7 @@ use MiniOrange\Helper\DB;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 use Illuminate\Routing\Controller;
 use Illuminate\Foundation\Auth\User;
 use MiniOrange\Helper\Lib\AESEncryption;
@@ -18,12 +19,11 @@ class AuthFacadeController extends Controller
 {
 
     use AuthenticatesUsers;
-
-    protected $redirectTo = '/start';
+    use ThrottlesLogins;
 
     public $mailid = '';
-
     public $name = '';
+    protected $redirectTo = '/start';
 
     public function __construct()
     {
@@ -82,11 +82,6 @@ class AuthFacadeController extends Controller
         return $this->sendFailedLoginResponse($request);
     }
 
-    protected function credentials(Request $request)
-    {
-        return $request->only($this->username());
-    }
-
     protected function attemptLogin(Request $request)
     {
         /*
@@ -94,7 +89,7 @@ class AuthFacadeController extends Controller
          * $this->credentials($request), $request->filled('remember')
          * );
          */
-        if(!isset($_SESSION))
+        if (!isset($_SESSION))
             session_start();
         $user = User::where('email', $request['email'])->first();
         if ($user == null) { // Create User if not existing
@@ -102,15 +97,22 @@ class AuthFacadeController extends Controller
             $user->email = $request['email'];
             $user->name = $request['name'];
             $user->password = Hash::make(Str::random(8));
-            try{$user->save();}
-            catch(\PDOException $e){
-                if($e->getCode() == '42S22')
-                    echo "<b>".$e->getCode()." : Database > Table > Column not found.</b> It seems your <b>Users table</b> does not have column(s) <b>".implode(", ",array_keys($custom))."</b> as mapped in <a href=/setup.php>Custom Attribute Mapping</a>. Please check your <a href=/setup.php>Custom Attribute Mapping</a> and <b>Users table</b>";
+            try {
+                $user->save();
+            } catch (\PDOException $e) {
+                if ($e->getCode() == '42S22')
+                    echo "<b>" . $e->getCode() . " : Database > Table > Column not found.</b> It seems your <b>Users table</b> does not have columL̥n(s) <b>" . implode(", ", array_keys($custom)) . "</b> as mapped in <a href=/setup.php>Custom Attribute Mapping</a>. Please check your <a href=/setup.php>Custom Attribute Mapping</a> and <b>Users table</b>";
                 exit;
             }
         }
         $id = $user->id;
-        return $this->guard()->loginUsingId($id, True);
+        $user = Auth::login($user, true);
+        //return $user;
+    }
+
+    protected function credentials(Request $request)
+    {
+        return $request->only($this->username());
     }
 }
 

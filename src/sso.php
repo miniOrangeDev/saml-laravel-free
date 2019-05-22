@@ -23,7 +23,6 @@ final class SSO
         $pluginSettings = PluginSettings::getPluginSettings();
         if (array_key_exists('SAMLResponse', $_REQUEST) && ! empty($_REQUEST['SAMLResponse'])) {
             try {
-                //exit("here1");
                 $relayStateUrl = array_key_exists('RelayState', $_REQUEST) ? $_REQUEST['RelayState'] : '/';
                 $samlResponseObj = ReadResponseAction::execute(); // read the samlResponse from IDP
                 $responseAction = new ProcessResponseAction($samlResponseObj);
@@ -39,7 +38,6 @@ final class SSO
                     (new TestResultActions($attrs))->execute(); // show test results
                 } else {
                     (new ProcessUserAction($attrs, $relayStateUrl, $sessionIndex))->execute(); // process user action
-
                     session_id('attributes');
                     session_start();
                     $_SESSION['email'] = $attrs['NameID'];

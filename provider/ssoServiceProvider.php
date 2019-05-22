@@ -3,6 +3,7 @@
 namespace provider;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Application;
 
 class ssoServiceProvider extends ServiceProvider
 {
@@ -25,8 +26,20 @@ class ssoServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-         $this->loadMigrationsFrom(__DIR__.'/../src/classes/actions');
-         $this->loadRoutesFrom(__DIR__.'/../src/routes.php');
-         $this->loadViewsFrom(__DIR__.'/../src/','newidea');
+        $app = app();
+        $version = floatval($app->version());
+        if($version <= 5.3) {
+            if (! $this->app->routesAreCached()) {
+                require __DIR__.'/../src/routes.php';
+            }
+            $this->loadViewsFrom(__DIR__.'/../src/','newidea');
+
+
+        }
+        else{
+            $this->loadMigrationsFrom(__DIR__.'/../src/classes/actions');
+            $this->loadRoutesFrom(__DIR__.'/../src/routes.php');
+            $this->loadViewsFrom(__DIR__.'/../src/','newidea');
+        }
     }
 }

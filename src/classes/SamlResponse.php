@@ -39,7 +39,7 @@ class SamlResponse
 			$this->certificates = $sig['Certificates'];
 			$this->signatureData = $sig;
 		}
-        
+
         $doc = $xml->ownerDocument;
         $xpath = new \DOMXpath($doc);
         if(!(@$xpath->query('/saml2p:Response',$xml)))

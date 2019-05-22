@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Schema;
 use MiniOrange\Helper\Constants;
 use MiniOrange\Classes\Actions\DatabaseController as DBinstaller;
 
-
 if (! defined('MSSP_VERSION'))
     define('MSSP_VERSION', '1.0.0');
 if (! defined('MSSP_NAME'))
@@ -53,19 +52,16 @@ if (isset($_SERVER['REQUEST_URI'])) {
         echo '<script>
                 window.onload = function() { addSsoButton() };
                 function addSsoButton() {
-                var ele = document.createElement("input");
-                ele.type = "button";
-                ele.value = "Single Sign On";
+                var ele = document.createElement("button");
+                ele.className = "btn btn-primary";
+                ele.innerHTML = "Single Sign On";
                 ele.name = "sso_button";
                 ele.id = "sso_button";
-                ele.style ="width: fit-content;float: right;margin-right: -6%;";
+                ele.style ="margin-left:44%";
                 ele.onclick = function() {window.location.replace("/login.php")};
                 document.body.appendChild(ele);
-                var mainObj = document.getElementsByTagName("NAV")[0];
+                }
 
-                    var childs = mainObj.childNodes;
-                    childs[0].appendChild(ele);  }              
-                
                 </script>';
     }
 }
@@ -250,7 +246,6 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
         DB::update_option('acs_url', $acs_url);
         DB::update_option('single_logout_url', $single_logout_url);
         DB::update_option('relaystate_url',$relaystate_url);
-
         DB::update_option('mo_saml_message', 'Settings saved successfully.');
         mo_saml_show_success_message();
         if (empty($saml_x509_certificate)) {
