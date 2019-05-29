@@ -25,7 +25,9 @@ class DB extends Controller
 
     protected static function startConnection()
     {
-        require_once __DIR__ . '\..\..\..\..\laravel\framework\src\Illuminate\Support\helpers.php';
+	$path = realpath(__DIR__.'/../../../../laravel/framework/src/Illuminate/Support/helpers.php');
+        include_once $path;
+
         $connection = array(
             'driver' => getenv('DB_CONNECTION'),
             'host' => getenv('DB_HOST'),

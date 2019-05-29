@@ -33,7 +33,7 @@ function recurse_copy($src, $dst)
 {
     $dir = opendir($src);
 
-    @mkdir($dst, 077, true);
+    @mkdir($dst, 0777, true);
     while (false !== ($file = readdir($dir))) {
         if (($file != '.') && ($file != '..')) {
             if (is_dir($src . '/' . $file)) {

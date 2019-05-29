@@ -19,7 +19,7 @@ class AuthFacadeController extends Controller
 {
 
     use AuthenticatesUsers;
-    use ThrottlesLogins;
+    //use ThrottlesLogins;
 
     public $mailid = '';
     public $name = '';
