@@ -1,7 +1,8 @@
 <?php
 namespace MiniOrange\Helper;
 
-use Illuminate\Database\Capsule\Manager as LaraDB;
+use Illuminate\Support\Facades\DB as LaraDB;
+use MiniOrange\Classes\Actions\DatabaseController as DC;
 use Illuminate\Routing\Controller;
 use Illuminate\Contracts\Console\Kernel as Kernel;
 use Illuminate\Support\Facades\Artisan;
@@ -18,87 +19,56 @@ class DB extends Controller
 
     public static function get_option($key)
     {
-        self::startConnection();
-        $option = LaraDB::table('mo_config')->first()->$key;
-        return $option;
-    }
-
-    protected static function startConnection()
-    {
-	$path = realpath(__DIR__.'/../../../../laravel/framework/src/Illuminate/Support/helpers.php');
-        include_once $path;
-
-        $connection = array(
-            'driver' => getenv('DB_CONNECTION'),
-            'host' => getenv('DB_HOST'),
-            'port' => getenv('DB_PORT'),
-            'database' => getenv('DB_DATABASE'),
-            'username' => getenv('DB_USERNAME'),
-            'password' => getenv('DB_PASSWORD'),
-            'collation' => 'default'
-        );
-
-        $Capsule = new LaraDB();
-        $Capsule->addConnection($connection);
-        $Capsule->setAsGlobal(); // this is important. makes the database manager object globally available
-        $Capsule->bootEloquent();
-        try {
-
-            if (LaraDB::table('mo_config')->first() == NULL) {
-                LaraDB::table('mo_config')->updateOrInsert([
-                    'id' => 1
-                ], [
-                    'mo_saml_host_name' => 'https://auth.miniorange.com'
-                ]);
-            }
-        } catch (PDOException $e) {
-
-            if ($e->getCode() === '42S02') {
-
-                header('Location: create_tables');
-                exit();
-            }
-            if ($e->getCode() == 2002) {
-                echo 'It looks like your <b>Database is offline</b>. Please make sure that your database is up and running, and try again.<a style="text-decoration:none" href="/"><u>Click here to go back to your website</u></a>';
-                exit();
-            }
-        }
+         try {
+             $result = LaraDB::select('select * from mo_config where id = ?', [1])[0];
+         }
+         catch(\PDOException $e)
+         {
+             if($e->getCode() == '42S02'){
+                 header('Location: create_tables');
+                 exit;
+             }
+         }
+        return $result->$key;
     }
 
     public static function update_option($key, $value)
     {
-        self::startConnection();
-        LaraDB::table('mo_config')->where('id', 1)->update([
+        $result = LaraDB::table('mo_config')->updateOrInsert([
+            'id' => 1
+        ],[
             $key => $value
         ]);
     }
 
     public static function delete_option($key)
     {
-        self::startConnection();
-        LaraDB::table('mo_config')->where('id', 1)->update([
+        $result = LaraDB::table('mo_config')->updateOrInsert([
+            'id' => 1
+        ],[
             $key => ''
         ]);
     }
 
     public static function get_registered_user()
     {
-        self::startConnection();
-        $registered_user = LaraDB::table('mo_admin')->first();
-        if ($registered_user !== NULL) {
-            return $registered_user;
-        } else {
-            if (isset($_SESSION['authorized'])) {
-                unset($_SESSION['authorized']);
-                header('Location: mo_admin');
+        try {
+            $result = LaraDB::select('select * from mo_admin')[0];
+        }
+        catch(\PDOException $e){
+            if($e->getCode() == '42S02'){
+                header('Location: create_tables');
                 exit;
             }
         }
+        if(empty($result->email))
+            return null;
+        else
+            return $result;
     }
 
     public static function register_user($email, $password)
     {
-        self::startConnection();
         LaraDB::table('mo_admin')->updateOrInsert([
             'id' => 1
         ], [
@@ -109,9 +79,7 @@ class DB extends Controller
 
     protected static function get_options()
     {
-        self::startConnection();
-        $active_config = LaraDB::table('mo_config')->get()->first();
-        return $active_config;
+        $result = LaraDB::select('select * from mo_config')[0];
     }
 }
 

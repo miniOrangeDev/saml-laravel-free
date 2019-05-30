@@ -76,8 +76,6 @@ class Assertion
 		if($xml->localName === 'EncryptedAssertion')
 		{
 				$data = SAMLUtilities::xpQuery($xml, './xenc:EncryptedData');
-				// $encryptedMethod =  SAMLUtilities::xpQuery($xml, './xenc:EncryptedData/ds:KeyInfo');
-				// $method = $encryptedMethod[0]->firstChild->firstChild->getAttribute("Algorithm");
                 $encryptedMethod = SAMLUtilities::xpQuery($xml, './xenc:EncryptedData/ds:KeyInfo/xenc:EncryptedKey');
                 $method = '';
                 if(empty($encryptedMethod)){

@@ -32,14 +32,14 @@ class ssoServiceProvider extends ServiceProvider
             if (! $this->app->routesAreCached()) {
                 require __DIR__.'/../src/routes.php';
             }
-            $this->loadViewsFrom(__DIR__.'/../src/','newidea');
+            $this->loadViewsFrom(__DIR__.'/../src/','mosaml');
 
 
         }
         else{
             $this->loadMigrationsFrom(__DIR__.'/../src/classes/actions');
             $this->loadRoutesFrom(__DIR__.'/../src/routes.php');
-            $this->loadViewsFrom(__DIR__.'/../src/','newidea');
+            $this->loadViewsFrom(__DIR__.'/../src/','mosaml');
         }
     }
 }

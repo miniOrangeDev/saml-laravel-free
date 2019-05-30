@@ -261,7 +261,6 @@ class SAMLUtilities
              * Something went wrong during decryption, but for security
              * reasons we cannot tell the user what failed.
              */
-            //print_r($e->getMessage());
             throw new Exception('Failed to decrypt XML element.');
         }
     }

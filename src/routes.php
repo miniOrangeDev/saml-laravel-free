@@ -8,25 +8,25 @@ Route::get('mo_admin', function () {
 Route::get('register.php', function () {
     include_once 'register.php';
     include_once 'jsLoader.php';
-    return view('newidea::registerView');
+    return view('mosaml::registerView');
 });
 
 Route::post('register.php', function () {
     include_once 'register.php';
     include_once 'jsLoader.php';
-    return view('newidea::registerView');
+    return view('mosaml::registerView');
 });
 
 Route::get('admin_login.php', function () {
     include_once 'admin_login.php';
     include 'jsLoader.php';
-    return view('newidea::adminLoginView');
+    return view('mosaml::adminLoginView');
 });
 
 Route::post('admin_login.php', function () {
     include_once 'admin_login.php';
     include 'jsLoader.php';
-    return view('newidea::adminLoginView');
+    return view('mosaml::adminLoginView');
 });
 
 Route::get('login.php/{RelayState?}', function ($RelayState = '/') {
@@ -36,18 +36,18 @@ Route::get('login.php/{RelayState?}', function ($RelayState = '/') {
 Route::get('licensing.php', function () {
     include_once 'licensing.php';
     include 'jsLoader.php';
-    return view('newidea::licensingView');
+    return view('mosaml::licensingView');
 });
 Route::post('licensing.php', function () {
     include_once 'licensing.php';
     include 'jsLoader.php';
-    return view('newidea::licensingView');
+    return view('mosaml::licensingView');
 });
 
 Route::get('setup.php', function () {
     include_once 'setup.php';
     include_once 'jsLoader.php';
-    return view('newidea::setupView');
+    return view('mosaml::setupView');
 });
 
 Route::post('sso.php', function () {
@@ -63,18 +63,18 @@ Route::get('admin_logout.php', function () {
 Route::get('how_to_setup.php', function () {
     include_once 'how_to_setup.php';
     include_once 'jsLoader.php';
-    return view('newidea::howToSetupView');
+    return view('mosaml::howToSetupView');
 });
 
 Route::get('support.php', function () {
     include_once 'support.php';
     include_once 'jsLoader.php';
-    return view('newidea::supportView');
+    return view('mosaml::supportView');
 });
 Route::post('support.php', function () {
     include_once 'support.php';
     include_once 'jsLoader.php';
-    return view('newidea::supportView');
+    return view('mosaml::supportView');
 });
 
 
@@ -82,12 +82,12 @@ Route::post('support.php', function () {
 Route::post('setup.php', function () {
     include_once 'setup.php';
     include_once 'jsLoader.php';
-    return view('newidea::setupView');
+    return view('mosaml::setupView');
 });
 
 Route::post('how_to_setup.php', function () {
     include_once 'how_to_setup.php';
-    return view('newidea::howToSetupView');
+    return view('mosaml::howToSetupView');
 });
 
 Route::get('sign/{email?}', 'MiniOrange\Classes\Actions\AuthFacadeController@signin');

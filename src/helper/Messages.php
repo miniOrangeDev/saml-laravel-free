@@ -42,7 +42,7 @@ class Messages
     const INVALID_NO_OF_NAMEIDS 		= 'More than one <saml:NameID> or <saml:EncryptedD> in <saml:Subject>.';
     const MISSING_ID_FROM_RESPONSE 		= 'Missing ID attribute on SAML assertion.';
     const MISSING_ISSUER_VALUE 			= 'Missing <saml:Issuer> in assertion.';
-    const INVALID_ISSUER                = 'IDP Entity ID mismatch. <strong>Please configure {{found}} as Entity ID at {{http-host}}/setup.php</strong>';
+    const INVALID_ISSUER                = 'IDP Entity ID mismatch. <strong>Please configure {{found}} as Entity ID at <a href="setup.php">{{http-host}}/setup.php</a></strong>';
     const INVALID_AUDIENCE              = 'Invalid audience URI. Expected {{expect}}, found {{found}}';
     const INVALID_DESTINATION           = 'Destination in response doesn\'t match the current URL. Destination is {{destination}}, 
                                             current URL is {{currenturl}}.';

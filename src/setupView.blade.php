@@ -1,4 +1,4 @@
-<?php use MiniOrange\Helper\DB;?>
+<?php use MiniOrange\Helper\DB as DB;?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,7 +83,7 @@
 			<div class="tile">
                 <div class="row">
 						<div class="col-lg-6">
-							<form method="POST" action="" id="saml_form">
+							<form method="POST" action="setup.php" id="saml_form">
 								<input type="hidden" name="option"
 									value="save_connector_settings">
 								<h4>Identity Provider Settings</h4>
@@ -286,7 +286,7 @@
 							<h4>Attribute Mapping</h4> <h6 class="premium-indicator">Available in Premium Version</h6>
 							<br>
 
-							<form id="attrs_form" method="post" action="">
+							<form id="attrs_form" method="post" action="setup.php">
 								<input type="hidden" name="option" value="attribute_mapping">
 								<div class="form-group">
 									<label for="saml_am_email"><b>EMAIL</b></label> <input

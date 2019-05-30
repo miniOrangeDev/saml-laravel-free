@@ -47,7 +47,6 @@ class SamlResponse
         else
             $status = SAMLUtilities::xpQuery($xml, './saml2p:Status/saml2p:StatusCode');
 
-        // $status = SAMLUtilities::xpQuery($xml, './samlp:Status/samlp:StatusCode');
         $this->statusCode = $status[0]->getAttribute('Value');
 		
 		/* set the destination from saml response */

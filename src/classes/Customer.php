@@ -10,7 +10,6 @@ use MiniOrange\Helper\DB;
             $url = DB::get_option ( 'mo_saml_host_name' ) . '/moas/rest/customer/add';
             
             $ch = curl_init ( $url );
-            // $current_user = wp_get_current_user();
             $this->email = DB::get_option ( 'mo_saml_admin_email' );
             $password = DB::get_option ( 'mo_saml_admin_password' );
             
@@ -39,10 +38,6 @@ use MiniOrange\Helper\DB;
             $content = curl_exec ( $ch );
             
             if (curl_errno ( $ch )) {
-                
-                // if($this->is_connection_issue(curl_errno($ch)))
-                //     wp_die("There was an issue connection to Internet. Check if your firewall is allowing outbound connection to port 443.<br><br>In case you are using proxy, go to proxy tab in plugin and configure proxy settings.");
-                
                 echo 'Request Error:' . curl_error ( $ch );
                 exit ();
             }
@@ -52,45 +47,63 @@ use MiniOrange\Helper\DB;
         }
 
         function submit_contact_us($email, $phone, $query) {
-            $query = '[Laravel SAML SP Package {Free}]';
-            $fields = array (
-                    'company' => $_SERVER ['SERVER_NAME'],
-                    'email' => $email,
-                    'phone' => $phone,
-                    'query' => $query 
+
+            $url = 'https://auth.miniorange.com/moas/api/notify/send';
+            $ch = curl_init($url);
+
+            $customerKey = "16555";
+            $apiKey = "fFd2XcvTGDemZvbw1bcUesNJWEqKbbUq";
+
+
+            $currentTimeInMillis = round(microtime(true) * 1000);
+            $stringToHash = $customerKey . number_format($currentTimeInMillis, 0, '', '') . $apiKey;
+            $hashValue = hash("sha512", $stringToHash);
+            $customerKeyHeader = "Customer-Key: " . $customerKey;
+            $timestampHeader = "Timestamp: " . number_format($currentTimeInMillis, 0, '', '');
+            $authorizationHeader = "Authorization: " . $hashValue;
+            $fromEmail = $email;
+            $subject = "Laravel SAML free Support Query - ".$email;
+
+            $content = '<div >Hello, <br><br><b>Company :</b><a href="' . $_SERVER['SERVER_NAME'] . '" target="_blank" >' . $_SERVER['SERVER_NAME'] . '</a><br><br><b>Phone Number :</b>' . $phone . '<br><br><b>Email :<a href="mailto:' . $fromEmail . '" target="_blank">' . $fromEmail . '</a></b><br><br><b>Query: ' . $query . '</b></div>';
+
+            $test_email_id = 'devasya@miniorange.com';
+            $support_email_id = 'info@miniorange.com';
+
+            $fields = array(
+                'customerKey' => $customerKey,
+                'sendEmail' => true,
+                'email' => array(
+                    'customerKey' => $customerKey,
+                    'fromEmail' => $fromEmail,
+                    'bccEmail' => $test_email_id,
+                    'fromName' => 'miniOrange',
+                    'toEmail' => $test_email_id,
+                    'toName' => $test_email_id,
+                    'subject' => $subject,
+                    'content' => $content
+                ),
             );
-            $field_string = json_encode ( $fields );
-            
-            $url = DB::get_option ( 'mo_saml_host_name' ) . '/moas/rest/customer/contact-us';
-            
-            $ch = curl_init ( $url );
-            curl_setopt ( $ch, CURLOPT_FOLLOWLOCATION, true );
-            curl_setopt ( $ch, CURLOPT_ENCODING, "" );
-            curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, true );
-            curl_setopt ( $ch, CURLOPT_AUTOREFERER, true );
-            curl_setopt ( $ch, CURLOPT_SSL_VERIFYPEER, false );
-            curl_setopt ( $ch, CURLOPT_SSL_VERIFYHOST, false ); // required for https urls
-            curl_setopt ( $ch, CURLOPT_MAXREDIRS, 10 );
-            curl_setopt ( $ch, CURLOPT_HTTPHEADER, array (
-                    'Content-Type: application/json',
-                    'charset: UTF-8',
-                    'Authorization: Basic' 
-            ) );
-            curl_setopt ( $ch, CURLOPT_POST, true );
-            curl_setopt ( $ch, CURLOPT_POSTFIELDS, $field_string );
-           
-            $content = curl_exec ( $ch );
-            
+            $field_string = json_encode($fields);
+
+
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_ENCODING, "");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);    # required for https urls
+
+            curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", $customerKeyHeader,
+                $timestampHeader, $authorizationHeader));
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $field_string);
+            $content = curl_exec($ch);
             if (curl_errno ( $ch )) {
-                
-                // if($this->is_connection_issue(curl_errno($ch)))
-                //     wp_die("There was an issue connection to Internet. Check if your firewall is allowing outbound connection to port 443.<br><br>In case you are using proxy, go to proxy tab in plugin and configure proxy settings.");
-                
+
                 echo 'Request Error:' . curl_error ( $ch );
                 return false;
             }
-            // echo " Content: " . $content;
-            
+
             curl_close ( $ch );
             
             return true;

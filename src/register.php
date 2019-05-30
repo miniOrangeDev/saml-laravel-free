@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Response;
 use MiniOrange\Helper\DB;
 
 if (! isset($_SESSION)) {

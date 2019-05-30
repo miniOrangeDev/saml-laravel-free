@@ -47,9 +47,9 @@ class CreateMiniorangeTables extends Migration
             $table->string('session_index', 100)->nullable();
         });
         Schema::create('mo_admin', function (Blueprint $table) {
-            $table->string('id', 10);
-            $table->string('email', 100);
-            $table->string('password', 100);
+            $table->string('id', 10)->unique()->nullable();
+            $table->string('email', 100)->nullable();
+            $table->string('password', 100)->nullable();
         });
         $tables = [
             'mo_config',
@@ -59,6 +59,7 @@ class CreateMiniorangeTables extends Migration
             DB::statement('ALTER TABLE ' . $table . ' ENGINE = InnoDB');
         }
         DB::statement("INSERT INTO mo_config(id,mo_saml_host_name,mo_saml_new_registration) VALUES('1','https://auth.miniorange.com/','true')");
+        DB::insert('insert into mo_admin (id) values (1)');
     }
 
 

@@ -1,5 +1,5 @@
 <?php
-use MiniOrange\Helper\DB;
+use MiniOrange\Helper\DB as DB;
 use MiniOrange\Helper\Lib\AESEncryption;
 use Illuminate\Support\Facades\Schema;
 use MiniOrange\Helper\Constants;
@@ -63,211 +63,6 @@ if (isset($_SERVER['REQUEST_URI'])) {
                 }
 
                 </script>';
-    }
-}
-if (isset($_SESSION['connector']))
-    DB::update_option('mo_saml_host_name', 'https://auth.miniorange.com');
-
-if (isset($_POST['option']) && $_POST['option'] == 'mo_saml_contact_us') {
-    $email = $_POST['contact_us_email'];
-    $phone = $_POST['contact_us_phone'];
-    $query = $_POST['contact_us_query'];
-
-    if (mo_saml_check_empty_or_null($email) || mo_saml_check_empty_or_null($query)) {
-        DB::update_option('mo_saml_message', 'Please fill up Email and Query fields to submit your query.');
-        mo_saml_show_error_message();
-    } else if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        DB::update_option('mo_saml_message', 'Please enter a valid email address.');
-        mo_saml_show_error_message();
-    } else {
-        $submited = $customer->submit_contact_us($email, $phone, $query);
-        if ($submited == false) {
-            DB::update_option('mo_saml_message', 'Your query could not be submitted. Please try again.');
-            mo_saml_show_error_message();
-        } else {
-            DB::update_option('mo_saml_message', 'Thanks for getting in touch! We shall get back to you shortly.');
-            mo_saml_show_success_message();
-        }
-    }
-}
-
-if (isset($_POST['option']) and $_POST['option'] == "mo_saml_register_customer") {
-    mo_register_action();
-}
-
-if (isset($_POST['option']) and $_POST['option'] == "mo_saml_goto_login") {
-    DB::delete_option('mo_saml_new_registration');
-    DB::update_option('mo_saml_verify_customer', 'true');
-}
-
-if (isset($_POST['option']) and $_POST['option'] == "change_miniorange") {
-    mo_saml_remove_account();
-    DB::update_option('mo_saml_guest_enabled', true);
-    DB::update_option('mo_saml_message', 'Logged out of miniOrange account');
-    mo_saml_show_success_message();
-    return;
-}
-
-if (isset($_POST['option']) and $_POST['option'] == "mo_saml_go_back") {
-    DB::update_option('mo_saml_registration_status', '');
-    DB::update_option('mo_saml_verify_customer', '');
-    DB::update_option('mo_saml_new_registration',true);
-    DB::delete_option('mo_saml_admin_email');
-    DB::delete_option('mo_saml_admin_phone');
-}
-
-if (isset($_POST['option']) and $_POST['option'] == "mo_saml_verify_customer") { // register the admin to miniOrange
-
-    if (! mo_saml_is_curl_installed()) {
-        DB::update_option('mo_saml_message', 'ERROR: <a href="http://php.net/manual/en/curl.installation.php" target="_blank">PHP cURL extension</a> is not installed or disabled. Login failed.');
-        mo_saml_show_error_message();
-
-        return;
-    }
-
-    $email = '';
-    $password = '';
-    if (mo_saml_check_empty_or_null($_POST['email']) || mo_saml_check_empty_or_null($_POST['password'])) {
-        DB::update_option('mo_saml_message', 'All the fields are required. Please enter valid entries.');
-        mo_saml_show_error_message();
-
-        return;
-    } else if (checkPasswordpattern(strip_tags($_POST['password']))) {
-        DB::update_option('mo_saml_message', 'Minimum 6 characters should be present. Maximum 15 characters should be present. Only following symbols (!@#.$%^&*-_) should be present.');
-        mo_saml_show_error_message();
-        return;
-    } else {
-        $email = $_POST['email'];
-        $password = stripslashes(strip_tags($_POST['password']));
-    }
-
-    DB::update_option('mo_saml_admin_email', $email);
-    DB::update_option('mo_saml_admin_password', $password);
-    $customer = new CustomerSaml();
-    $content = $customer->get_customer_key();
-    $customerKey = json_decode($content, true);
-    if (json_last_error() == JSON_ERROR_NONE) {
-        DB::update_option('mo_saml_admin_customer_key', $customerKey['id']);
-        DB::update_option('mo_saml_admin_api_key', $customerKey['apiKey']);
-        DB::update_option('mo_saml_customer_token', $customerKey['token']);
-        $certificate = DB::get_option('saml_x509_certificate');
-        if (empty($certificate)) {
-            DB::update_option('mo_saml_free_version', 1);
-        }
-        DB::update_option('mo_saml_admin_password', '');
-        DB::update_option('mo_saml_message', 'Customer retrieved successfully');
-        DB::update_option('mo_saml_registration_status', 'Existing User');
-        DB::delete_option('mo_saml_new_registration');
-        DB::delete_option('mo_saml_verify_customer');
-        mo_saml_show_success_message();
-    } else {
-        DB::delete_option('mo_saml_admin_email', $email);
-        DB::delete_option('mo_saml_admin_password', $password);
-        DB::update_option('mo_saml_message', 'Invalid username or password. Please try again.');
-        mo_saml_show_error_message();
-    }
-    DB::update_option('mo_saml_admin_password', '');
-}
-
-if (isset($_POST['option']) and $_POST['option'] == "mo_saml_contact_us_query_option") {
-
-    if (! mo_saml_is_curl_installed()) {
-        DB::update_option('mo_saml_message', 'ERROR: <a href="http://php.net/manual/en/curl.installation.php" target="_blank">PHP cURL extension</a> is not installed or disabled. Query submit failed.');
-        mo_saml_show_error_message();
-
-        return;
-    }
-
-    // Contact Us query
-    $email = $_POST['mo_saml_contact_us_email'];
-    $phone = $_POST['mo_saml_contact_us_phone'];
-    $query = $_POST['mo_saml_contact_us_query'];
-    $customer = new CustomerSaml();
-    if (mo_saml_check_empty_or_null($email) || mo_saml_check_empty_or_null($query)) {
-        DB::update_option('mo_saml_message', 'Please fill up Email and Query fields to submit your query.');
-        mo_saml_show_error_message();
-    } else if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        DB::update_option('mo_saml_message', 'Please enter a valid email address.');
-        mo_saml_show_error_message();
-    } else {
-        $submited = $customer->submit_contact_us($email, $phone, $query);
-        if ($submited == false) {
-            DB::update_option('mo_saml_message', 'Your query could not be submitted. Please try again.');
-            mo_saml_show_error_message();
-        } else {
-            DB::update_option('mo_saml_message', 'Thanks for getting in touch! We shall get back to you shortly.');
-            mo_saml_show_success_message();
-        }
-    }
-}
-
-if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
-    $saml_identity_name = '';
-    $idp_entity_id = '';
-    $saml_login_url = '';
-    $saml_login_binding_type = '';
-    $saml_x509_certificate = '';
-    $sp_base_url = '';
-    $sp_entity_id = '';
-    $acs_url = '';
-    $single_logout_url = '';
-    $relaystate_url = '';
-
-    if (mo_saml_check_empty_or_null($_POST['idp_name']) || mo_saml_check_empty_or_null($_POST['saml_login_url']) || mo_saml_check_empty_or_null($_POST['idp_entity_id'])) {
-        DB::update_option('mo_saml_message', 'All the fields are required. Please enter valid entries.');
-        mo_saml_show_error_message();
-        return;
-    } else if (! preg_match("/^\w*$/", $_POST['idp_name'])) {
-        DB::update_option('mo_saml_message', 'Please match the requested format for Identity Provider Name. Only alphabets, numbers and underscore is allowed.');
-        mo_saml_show_error_message();
-        return;
-    } else {
-        $saml_identity_name = trim($_POST['idp_name']);
-        $saml_login_url = trim($_POST['saml_login_url']);
-        if (array_key_exists('login_binding_type', $_POST))
-            $saml_login_binding_type = $_POST['login_binding_type'];
-
-        $idp_entity_id = trim($_POST['idp_entity_id']);
-        $saml_x509_certificate = sanitize_certificate($_POST['x509_certificate']);
-
-        $sp_base_url = trim($_POST['site_base_url']);
-        $sp_entity_id = trim($_POST['sp_entity_id']);
-        $acs_url = trim($_POST['acs_url']);
-        $single_logout_url = trim($_POST['slo_url']);
-        $relaystate_url = trim($_POST['relaystate_url']);
-
-        DB::update_option('saml_identity_name', $saml_identity_name);
-        DB::update_option('idp_entity_id', $idp_entity_id);
-        DB::update_option('saml_login_url', $saml_login_url);
-        DB::update_option('saml_login_binding_type', $saml_login_binding_type);
-        DB::update_option('saml_x509_certificate', $saml_x509_certificate);
-        DB::update_option('sp_base_url', $sp_base_url);
-        DB::update_option('sp_entity_id', $sp_entity_id);
-        DB::update_option('acs_url', $acs_url);
-        DB::update_option('single_logout_url', $single_logout_url);
-        DB::update_option('relaystate_url',$relaystate_url);
-        DB::update_option('mo_saml_message', 'Settings saved successfully.');
-        mo_saml_show_success_message();
-        if (empty($saml_x509_certificate)) {
-            DB::update_option("mo_saml_message", 'Invalid Certificate:Please provide a certificate');
-            mo_saml_show_error_message();
-        }
-
-        $saml_x509_certificate = sanitize_certificate($saml_x509_certificate);
-        if (! @openssl_x509_read($saml_x509_certificate)) {
-            DB::update_option('mo_saml_message', 'Invalid certificate: Please provide a valid certificate.');
-            mo_saml_show_error_message();
-            DB::delete_option('saml_x509_certificate');
-        }
-    }
-}
-
-if (isset($_POST['option']) && $_POST['option'] == 'attribute_mapping') {
-    if (isset($_POST['saml_am_email']) && ! empty($_POST['saml_am_email'])) {
-        DB::update_option('saml_am_email', 'NameID');
-    }
-    if (isset($_POST['saml_am_username']) && ! empty($_POST['saml_am_username'])) {
-        DB::update_option('saml_am_username', 'NameID');
     }
 }
 
@@ -352,7 +147,6 @@ function mo_saml_is_customer_registered()
 function mo_register_action()
 {
 
-    // $user = wp_get_current_user();
     $email = $_POST['email'];
     $password = stripslashes($_POST['password']);
     $confirmPassword = stripslashes($_POST['confirmPassword']);
@@ -457,7 +251,7 @@ function mo_saml_show_customer_details()
         <table>
             <tr>
                 <td>
-                    <form name="f1" method="post" action="" id="mo_saml_goto_login_form"
+                    <form name="f1" method="post" action="licensing.php" id="mo_saml_goto_login_form"
                           style="margin-block-end: auto;">
                         <input type="hidden" value="change_miniorange" name="option" /> <input
                             type="submit" value="Change miniOrange Account" class="btn btn-primary" />
@@ -509,7 +303,7 @@ function mo_saml_show_registration_page()
 {
     ?>
 
-    <form name="f" method="post" action="">
+    <form name="f" method="post" action="licensing.php">
         <input type="hidden" name="option" value="mo_saml_register_customer"/>
         <div class="mo_saml_table_layout" id="registration_div">
             <h4>Register with miniOrange</h4>
@@ -565,10 +359,10 @@ function mo_saml_show_registration_page()
                 </table></div>
         </div>
     </form>
-    <form name="f1" method="post" action="" id="mo_saml_goto_login_form">
+    <form name="f1" method="post" action="licensing.php" id="mo_saml_goto_login_form">
         <input type="hidden" name="option" value="mo_saml_goto_login"/>
     </form>
-    <form name="f" method="post" action="" id="mo_saml_continue_guest">
+    <form name="f" method="post" action="licensing.php" id="mo_saml_continue_guest">
         <input type="hidden" name="option" value="mo_continue_as_guest"/>
     </form>
 
@@ -586,7 +380,7 @@ function mo_saml_show_registration_page()
 function mo_saml_show_verify_password_page()
 {
     ?>
-    <form name="f" method="post" action="">
+    <form name="f" method="post" action="licensing.php">
         <input type="hidden" name="option" value="mo_saml_verify_customer"/>
         <div class="mo_saml_table_layout">
             <div id="toggle1" class="panel_toggle">

@@ -19,7 +19,6 @@ final class SSO
 
     public function __construct()
     {
-        //exit("here2");
         $pluginSettings = PluginSettings::getPluginSettings();
         if (array_key_exists('SAMLResponse', $_REQUEST) && ! empty($_REQUEST['SAMLResponse'])) {
             try {

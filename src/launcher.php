@@ -12,7 +12,7 @@ if(!isset($_SESSION)) {
 
 if (session_id() == 'connector' || session_id() == 'attributes') {
     if (is_user_registered()==NULL) {
-        header("Location: register.php"); // https://www.google.com
+        header("Location: register.php");
         exit();
     } else {
         header("Location: admin_login.php");
