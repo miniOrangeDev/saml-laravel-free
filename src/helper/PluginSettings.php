@@ -1,4 +1,5 @@
 <?php
+
 namespace MiniOrange\Helper;
 
 use MiniOrange\Helper\Utilities;
@@ -18,7 +19,7 @@ class PluginSettings
 
     public static function getPluginSettings()
     {
-        if (! isset(self::$obj)) {
+        if (!isset(self::$obj)) {
             self::$obj = new PluginSettings();
         }
 

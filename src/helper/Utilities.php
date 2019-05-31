@@ -1,161 +1,166 @@
 <?php
 
-    namespace MiniOrange\Helper;
+namespace MiniOrange\Helper;
 
-    use Exception;
-    use MiniOrange\Helper\Exception\NotRegisteredException;
+use Exception;
+use MiniOrange\Helper\Exception\NotRegisteredException;
 
-    class Utilities
+class Utilities
+{
+    /**
+     * Get resource director path
+     * @return string
+     */
+    public static function getResourceDir()
     {
-        /**
-         * Get resource director path
-         * @return string
-         */
-        public static function getResourceDir()
-        {
-            return MSSP_DIR.DIRECTORY_SEPARATOR.Constants::RESOURCE_FOLDER;
+        return MSSP_DIR . DIRECTORY_SEPARATOR . Constants::RESOURCE_FOLDER;
+    }
+
+
+    /**
+     * This function checks if a value is set or
+     * empty. Returns true if value is empty
+     *
+     * @return True or False
+     * @param $value - references the variable passed.
+     */
+    public static function isBlank($value)
+    {
+        if (!isset($value) || empty($value)) return TRUE;
+        return FALSE;
+    }
+
+
+    /**
+     * Get the Private Key File Path
+     * @return string
+     */
+    public static function getPrivateKey()
+    {
+        return self::getResourceDir() . DIRECTORY_SEPARATOR . Constants::SP_KEY;
+    }
+
+    public static function getAlternatePrivateKey()
+    {
+        return self::getResourceDir() . DIRECTORY_SEPARATOR . Constants::SP_ALTERNATE_KEY;
+    }
+
+    /**
+     * Get the Public Key File Path
+     * @return string
+     */
+    public static function getPublicKey()
+    {
+        return self::getResourceDir() . DIRECTORY_SEPARATOR . Constants::SP_KEY;
+    }
+
+
+    /**
+     * Get Image Resource URL
+     */
+    public static function getImageUrl($imgFileName)
+    {
+        echo self::getBaseUrl() . '/' . MSSP_NAME . '/resources/images/' . $imgFileName;
+        exit;
+        return self::getBaseUrl() . '/' . MSSP_NAME . '/resources/images/' . $imgFileName;
+    }
+
+
+    /**
+     * Get the base url of the site.
+     * @return string
+     */
+    public static function getBaseUrl()
+    {
+        $pageURL = 'http';
+
+        if ((isset($_SERVER["HTTPS"])) && ($_SERVER["HTTPS"] == "on"))
+            $pageURL .= "s";
+
+        $pageURL .= "://";
+
+        if ($_SERVER["SERVER_PORT"] != "80")
+            $pageURL .= $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"];
+        else
+            $pageURL .= $_SERVER["SERVER_NAME"];
+        return $pageURL;
+    }
+
+
+    /**
+     * The function returns the current page URL.
+     * @return string
+     */
+    public static function currentPageUrl()
+    {
+        return self::getBaseUrl() . $_SERVER["REQUEST_URI"];
+    }
+
+    public static function check_certificate_format($certificate)
+    {
+        if (!@openssl_x509_read($certificate)) {
+            throw new Exception("Certificate configured in the connector is in wrong format");
         }
+    }
 
+    /**
+     * This function sanitizes the certificate
+     */
+    public static function sanitize_certificate($certificate)
+    {
+        $certificate = trim($certificate);
+        $certificate = preg_replace("/[\r\n]+/", "", $certificate);
+        $certificate = str_replace("-", "", $certificate);
+        $certificate = str_replace("BEGIN CERTIFICATE", "", $certificate);
+        $certificate = str_replace("END CERTIFICATE", "", $certificate);
+        $certificate = str_replace(" ", "", $certificate);
+        $certificate = chunk_split($certificate, 64, "\r\n");
+        $certificate = "-----BEGIN CERTIFICATE-----\r\n" . $certificate . "-----END CERTIFICATE-----";
+        return $certificate;
+    }
 
-        /**
-         * This function checks if a value is set or
-         * empty. Returns true if value is empty
-         *
-         * @return True or False
-         * @param $value - references the variable passed.
-         */
-        public static function isBlank( $value )
-        {
-            if( ! isset( $value ) || empty( $value ) ) return TRUE;
-            return FALSE;
-        }
+    public static function desanitize_certificate($certificate)
+    {
+        $certificate = preg_replace("/[\r\n]+/", "", $certificate);
+        //$certificate = str_replace( "-", "", $certificate );
+        $certificate = str_replace("-----BEGIN CERTIFICATE-----", "", $certificate);
+        $certificate = str_replace("-----END CERTIFICATE-----", "", $certificate);
+        $certificate = str_replace(" ", "", $certificate);
+        //$certificate = chunk_split($certificate, 64, "\r\n");
+        //$certificate = "-----BEGIN CERTIFICATE-----\r\n" . $certificate . "-----END CERTIFICATE-----";
+        return $certificate;
+    }
 
+    /**
+     * Checks if the SAML Plugin has been configured or not. Checks if the
+     * IDP cert, Login Url , entity id and SP ACS url and entity id has been
+     * set.
+     * @return bool
+     */
+    public static function isSPConfigured()
+    {
+        $pluginSettings = PluginSettings::getPluginSettings();
+        $certSet = !self::isBlank($pluginSettings->getX509Certificate())
+            && strpos($pluginSettings->getX509Certificate(), "<") === false;
+        $samlLoginUrlSet = !self::isBlank($pluginSettings->getSamlLoginUrl())
+            && strpos($pluginSettings->getSamlLoginUrl(), "<") === false;
+        $acsUrlSet = !self::isBlank($pluginSettings->getAcsUrl())
+            && strpos($pluginSettings->getAcsUrl(), "<") === false;
+        $entityIDSet = !self::isBlank($pluginSettings->getSpEntityId())
+            && strpos($pluginSettings->getSpEntityId(), "<") === false;
+        $idpEntityIDSet = !self::isBlank($pluginSettings->getIdpEntityId())
+            && strpos($pluginSettings->getIdpEntityId(), "<") === false;
 
-        /**
-         * Get the Private Key File Path
-         * @return string
-         */
-        public static function getPrivateKey()
-        {
-            return self::getResourceDir().DIRECTORY_SEPARATOR.Constants::SP_KEY;
-        }
+        return $certSet && $samlLoginUrlSet && $acsUrlSet && $entityIDSet && $idpEntityIDSet;
+    }
 
-        public static function getAlternatePrivateKey(){
-            return self::getResourceDir().DIRECTORY_SEPARATOR.Constants::SP_ALTERNATE_KEY;
-        }
-
-        /**
-         * Get the Public Key File Path
-         * @return string
-         */
-        public static function getPublicKey()
-        {
-            return self::getResourceDir().DIRECTORY_SEPARATOR.Constants::SP_KEY;
-        }
-
-
-        /**
-         * Get Image Resource URL
-         */
-        public static function getImageUrl($imgFileName)
-        {
-            echo self::getBaseUrl().'/'.MSSP_NAME.'/resources/images/'.$imgFileName;exit;
-            return self::getBaseUrl().'/'.MSSP_NAME.'/resources/images/'.$imgFileName;
-        }
-
-
-        /**
-         * Get the base url of the site.
-         * @return string
-         */
-        public static function getBaseUrl()
-        {
-            $pageURL = 'http';
-
-            if ((isset($_SERVER["HTTPS"])) && ($_SERVER["HTTPS"] == "on"))
-                $pageURL .= "s";
-
-            $pageURL .= "://";
-
-            if ($_SERVER["SERVER_PORT"] != "80")
-                $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"];
-            else
-                $pageURL .= $_SERVER["SERVER_NAME"];
-            return $pageURL;
-        }
-
-
-        /**
-         * The function returns the current page URL.
-         * @return string
-         */
-        public static function currentPageUrl()
-        {
-            return self::getBaseUrl() . $_SERVER["REQUEST_URI"];
-        }
-
-        public static function check_certificate_format($certificate){
-            if(!@openssl_x509_read($certificate)){
-                throw new Exception("Certificate configured in the connector is in wrong format");
-            }
-        }
-
-        /**
-         * This function sanitizes the certificate
-         */
-        public static function sanitize_certificate( $certificate ) {
-            $certificate = trim($certificate);
-            $certificate = preg_replace("/[\r\n]+/", "", $certificate);
-            $certificate = str_replace( "-", "", $certificate );
-            $certificate = str_replace( "BEGIN CERTIFICATE", "", $certificate );
-            $certificate = str_replace( "END CERTIFICATE", "", $certificate );
-            $certificate = str_replace( " ", "", $certificate );
-            $certificate = chunk_split($certificate, 64, "\r\n");
-            $certificate = "-----BEGIN CERTIFICATE-----\r\n" . $certificate . "-----END CERTIFICATE-----";
-            return $certificate;
-        }
-
-        public static function desanitize_certificate( $certificate ) {
-            $certificate = preg_replace("/[\r\n]+/", "", $certificate);
-            //$certificate = str_replace( "-", "", $certificate );
-            $certificate = str_replace( "-----BEGIN CERTIFICATE-----", "", $certificate );
-            $certificate = str_replace( "-----END CERTIFICATE-----", "", $certificate );
-            $certificate = str_replace( " ", "", $certificate );
-            //$certificate = chunk_split($certificate, 64, "\r\n");
-            //$certificate = "-----BEGIN CERTIFICATE-----\r\n" . $certificate . "-----END CERTIFICATE-----";
-            return $certificate;
-        }
-
-        /**
-         * Checks if the SAML Plugin has been configured or not. Checks if the
-         * IDP cert, Login Url , entity id and SP ACS url and entity id has been
-         * set.
-         * @return bool
-         */
-        public static function isSPConfigured()
-        {   
-            $pluginSettings = PluginSettings::getPluginSettings();
-            $certSet = !self::isBlank($pluginSettings->getX509Certificate())
-            && strpos($pluginSettings->getX509Certificate(),"<") === false;
-            $samlLoginUrlSet = !self::isBlank($pluginSettings->getSamlLoginUrl())
-                && strpos($pluginSettings->getSamlLoginUrl(),"<") === false;
-            $acsUrlSet = !self::isBlank($pluginSettings->getAcsUrl())
-                && strpos($pluginSettings->getAcsUrl(),"<") === false;
-            $entityIDSet = !self::isBlank($pluginSettings->getSpEntityId())
-                && strpos($pluginSettings->getSpEntityId(),"<") === false;
-            $idpEntityIDSet = !self::isBlank($pluginSettings->getIdpEntityId())
-                && strpos($pluginSettings->getIdpEntityId(),"<") === false;
-
-            return $certSet && $samlLoginUrlSet && $acsUrlSet && $entityIDSet && $idpEntityIDSet;
-        }
-
-        /**
-         * Exception Page HTML Content
-         * @param $message
-         */
-        public static function showErrorMessage($message)
-        {
-            echo '
+    /**
+     * Exception Page HTML Content
+     * @param $message
+     */
+    public static function showErrorMessage($message)
+    {
+        echo '
                 <head>
                     <meta charset="utf-8">
                     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -168,11 +173,11 @@
                         <h1>Oops!! Something went wrong.</h1>
                         <p class="lead"> An unexpected condition was encountered.<br> </p>
                         <p>
-                            '.$message.'
+                            ' . $message . '
                         </p>
                     </div>        
                 </body>
             ';
-            exit;
-        }
+        exit;
     }
+}

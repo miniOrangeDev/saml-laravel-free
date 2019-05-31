@@ -1,19 +1,33 @@
 <?php
+
 use MiniOrange\Helper\DB as DB;
-if (! isset($_SESSION)) {
+
+if (!isset($_SESSION)) {
     session_id("connector");
     session_start();
 }
 if (!isset($_SESSION['authorized'])) {
     header('Location: admin_login.php');
     exit();
-}
-else{
-    if($_SESSION['authorized'] != true){
+} else {
+    if ($_SESSION['authorized'] != true) {
         header('Location: admin_login.php');
     }
 }
-
+// Check db connection by getting registered user
+try {
+    $user = DB::get_registered_user();
+} catch (\Exception $e) {
+    $code = $e->getCode();
+    $msg = $e->getMessage();
+    $trace = $e->getTraceAsString();
+    $env_con = getenv('DB_CONNECTION');
+    $env_db = getenv('DB_DATABASE');
+    $env_host = getenv('DB_HOST');
+    $config = config('database.driver');
+    echo nl2br("$code \n $msg  \n DB_CONNECTION : $env_con \n DB_DATABASE : $env_db \n DB_HOST : $env_host\n If the above configuration report is empty or incomplete, run <b>php artisan config:clear</b> in your command-line, check your <b>.env</b> file and please try again.  \n\nTRACE : \n $trace");
+    exit;
+}
 if (isset($_POST['option']) and $_POST['option'] == "mo_saml_register_customer") {
     mo_register_action();
 }
@@ -34,14 +48,14 @@ if (isset($_POST['option']) and $_POST['option'] == "change_miniorange") {
 if (isset($_POST['option']) and $_POST['option'] == "mo_saml_go_back") {
     DB::update_option('mo_saml_registration_status', '');
     DB::update_option('mo_saml_verify_customer', '');
-    DB::update_option('mo_saml_new_registration',true);
+    DB::update_option('mo_saml_new_registration', true);
     DB::delete_option('mo_saml_admin_email');
     DB::delete_option('mo_saml_admin_phone');
 }
 
 if (isset($_POST['option']) and $_POST['option'] == "mo_saml_verify_customer") { // register the admin to miniOrange
 
-    if (! mo_saml_is_curl_installed()) {
+    if (!mo_saml_is_curl_installed()) {
         DB::update_option('mo_saml_message', 'ERROR: <a href="http://php.net/manual/en/curl.installation.php" target="_blank">PHP cURL extension</a> is not installed or disabled. Login failed.');
         mo_saml_show_error_message();
 

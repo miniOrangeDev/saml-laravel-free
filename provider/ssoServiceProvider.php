@@ -15,7 +15,7 @@ class ssoServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->make('MiniOrange\Classes\Actions\AuthFacadeController');
-        
+
         //
     }
 
@@ -28,18 +28,17 @@ class ssoServiceProvider extends ServiceProvider
     {
         $app = app();
         $version = floatval($app->version());
-        if($version <= 5.3) {
-            if (! $this->app->routesAreCached()) {
-                require __DIR__.'/../src/routes.php';
+        if ($version <= 5.3) {
+            if (!$this->app->routesAreCached()) {
+                require __DIR__ . '/../src/routes.php';
             }
-            $this->loadViewsFrom(__DIR__.'/../src/','mosaml');
+            $this->loadViewsFrom(__DIR__ . '/../src/', 'mosaml');
 
 
-        }
-        else{
-            $this->loadMigrationsFrom(__DIR__.'/../src/classes/actions');
-            $this->loadRoutesFrom(__DIR__.'/../src/routes.php');
-            $this->loadViewsFrom(__DIR__.'/../src/','mosaml');
+        } else {
+            $this->loadMigrationsFrom(__DIR__ . '/../src/classes/actions');
+            $this->loadRoutesFrom(__DIR__ . '/../src/routes.php');
+            $this->loadViewsFrom(__DIR__ . '/../src/', 'mosaml');
         }
     }
 }

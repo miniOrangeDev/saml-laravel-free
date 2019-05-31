@@ -1,4 +1,5 @@
 <?php
+
 namespace MiniOrange;
 
 use MiniOrange\Classes\Actions\SendAuthnRequest;
@@ -16,4 +17,5 @@ final class Login
         }
     }
 }
+
 new Login();

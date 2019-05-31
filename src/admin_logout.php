@@ -1,5 +1,5 @@
 <?php
-if (! isset($_SESSION)) {
+if (!isset($_SESSION)) {
     session_id("connector");
     session_start();
 }

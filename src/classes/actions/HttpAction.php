@@ -1,4 +1,5 @@
 <?php
+
 namespace MiniOrange\Classes\Actions;
 
 use MiniOrange\Helper\Lib\XMLSecLibs\XMLSecurityKey;

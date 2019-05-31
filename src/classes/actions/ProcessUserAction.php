@@ -13,8 +13,8 @@ class ProcessUserAction
 
     /**
      * LogUserInAction constructor.
-     * @param $attrs        - all the user profile attributes send by the IDP in the SAML response
-     * @param $relayState   - the URL that the user needs to be redirected to
+     * @param $attrs - all the user profile attributes send by the IDP in the SAML response
+     * @param $relayState - the URL that the user needs to be redirected to
      * @param $sessionIndex - the session Index parameter provided by the IDP ( used for Single Logout Purposes )
      */
     public function __construct($attrs, $relayState, $sessionIndex)

@@ -32,7 +32,7 @@ class ProcessResponseAction
     private $pluginSettings;
 
     public function __construct(SamlResponse $samlResponseXML)
-    {   
+    {
         $this->pluginSettings = PluginSettings::getPluginSettings();
 
         //You can use dependency injection to get any class this observer may need.
@@ -59,37 +59,38 @@ class ProcessResponseAction
     public function execute()
     {
         $this->validateStatusCode();
-        
+
         $responseSignatureData = $this->samlResponse->getSignatureData();
-       
+
         $assertionSignatureData = current($this->samlResponse->getAssertions())->getSignatureData();
-        
+
         $this->certfpFromPlugin = iconv("UTF-8", "CP1252//IGNORE", $this->certfpFromPlugin);
-        
+
         $this->certfpFromPlugin = preg_replace('/\s+/', '', $this->certfpFromPlugin);
-        
+
         $this->validateSignature($responseSignatureData, $assertionSignatureData);
-        
+
         $this->validateDestinationURL();
-        
+
         $this->validateResponseSignature($responseSignatureData);
-        
+
         $this->validateAssertionSignature($assertionSignatureData);
-        
+
         $this->validateIssuerAndAudience();
-        
+
     }
 
     /**
      * Function checks if either of the SAML Response or
      * Assertion is signed or not
-     * 
+     *
      * @param $responseSignatureData
      * @param $assertionSignatureData
      * @throws \Exception
      */
-    private function validateSignature($responseSignatureData, $assertionSignatureData){
-        if(!$responseSignatureData && !$assertionSignatureData){
+    private function validateSignature($responseSignatureData, $assertionSignatureData)
+    {
+        if (!$responseSignatureData && !$assertionSignatureData) {
             throw new Exception('Neither the SAML Response nor the Assertion were signed. Please make sure that your Identity Provider sign atleast one of them.');
         }
     }
@@ -105,12 +106,12 @@ class ProcessResponseAction
      */
     private function validateResponseSignature($responseSignatureData)
     {
-        if($this->responseSigned!="1" || empty($responseSignatureData)) return;
+        if ($this->responseSigned != "1" || empty($responseSignatureData)) return;
         $validSignature = SAMLUtilities::processResponse($this->certfpFromPlugin, $responseSignatureData);
-        if(!$validSignature) {
+        if (!$validSignature) {
             throw new InvalidSignatureInResponseException($this->pluginSettings->getX509Certificate(),
-                $responseSignatureData['Certificates'][0],$this->samlResponse->getXML());
-            
+                $responseSignatureData['Certificates'][0], $this->samlResponse->getXML());
+
         }
     }
 
@@ -126,8 +127,8 @@ class ProcessResponseAction
     private function validateStatusCode()
     {
         $statusCode = $this->samlResponse->getStatusCode();
-        if(strpos($statusCode,'Success')===false)
-            throw new InvalidSamlStatusCodeException($statusCode,$this->samlResponse->getXML());
+        if (strpos($statusCode, 'Success') === false)
+            throw new InvalidSamlStatusCodeException($statusCode, $this->samlResponse->getXML());
     }
 
     /**
@@ -140,15 +141,15 @@ class ProcessResponseAction
      */
     private function validateAssertionSignature($assertionSignatureData)
     {
-        if($this->assertionSigned!=TRUE || empty($assertionSignatureData)) return;
+        if ($this->assertionSigned != TRUE || empty($assertionSignatureData)) return;
         $validSignature = SAMLUtilities::processResponse($this->certfpFromPlugin, $assertionSignatureData,
             $this->samlResponse);
-        if(!$validSignature) {
+        if (!$validSignature) {
             throw new InvalidSignatureInResponseException($this->pluginSettings->getX509Certificate(),
-                $assertionSignatureData['Certificates'][0],$this->samlResponse->getXML());
+                $assertionSignatureData['Certificates'][0], $this->samlResponse->getXML());
         }
     }
-    
+
 
     /**
      * Function validates the Issuer and Audience from the
@@ -164,10 +165,10 @@ class ProcessResponseAction
         $issuer = current($this->samlResponse->getAssertions())->getIssuer();
         $audience = current(current($this->samlResponse->getAssertions())->getValidAudiences());
         //echo " $issuer is issuer from response $this->issuer was stored $audience is audience from response should be $this->spEntityId";exit;
-        if(strcmp($this->issuer, $issuer) != 0)
-            throw new InvalidIssuerException($this->issuer,$issuer,$this->samlResponse->getXML());
-        if(strcmp($audience, $this->spEntityId) != 0)
-            throw new InvalidAudienceException($this->spEntityId,$audience,$this->samlResponse->getXML());
+        if (strcmp($this->issuer, $issuer) != 0)
+            throw new InvalidIssuerException($this->issuer, $issuer, $this->samlResponse->getXML());
+        if (strcmp($audience, $this->spEntityId) != 0)
+            throw new InvalidAudienceException($this->spEntityId, $audience, $this->samlResponse->getXML());
     }
 
 
@@ -183,6 +184,6 @@ class ProcessResponseAction
     {
         $msgDestination = $this->samlResponse->getDestination();
         if ($msgDestination !== NULL && $msgDestination !== $this->acsUrl)
-            throw new InvalidDestinationException($msgDestination,$this->acsUrl,$this->samlResponse);
+            throw new InvalidDestinationException($msgDestination, $this->acsUrl, $this->samlResponse);
     }
 }

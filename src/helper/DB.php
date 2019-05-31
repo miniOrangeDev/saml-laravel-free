@@ -19,49 +19,94 @@ class DB extends Controller
 
     public static function get_option($key)
     {
-         try {
-             $result = LaraDB::select('select * from mo_config where id = ?', [1])[0];
-         }
-         catch(\PDOException $e)
-         {
-             if($e->getCode() == '42S02'){
-                 header('Location: create_tables');
-                 exit;
-             }
-         }
+        try {
+            $result = LaraDB::select('select * from mo_config where id = ?', [1])[0];
+        } catch (\PDOException $e) {
+            if ($e->getCode() == '42S02') {
+                header('Location: create_tables');
+                exit;
+            }
+        } catch (\Exception $e) {
+            $code = $e->getCode();
+            $msg = $e->getMessage();
+            $trace = $e->getTraceAsString();
+            echo " $code \r\n $msg \r\n $trace \r\n";
+            $env_connection = getenv('DB_CONNECTION');
+            $env_database = getenv('DB_DATABASE');
+            $env_host = getenv('DB_HOST');
+            echo " $env_connection \r\n\ $env_database \r\n $env_host";
+            exit;
+        }
         return $result->$key;
     }
 
     public static function update_option($key, $value)
     {
-        $result = LaraDB::table('mo_config')->updateOrInsert([
-            'id' => 1
-        ],[
-            $key => $value
-        ]);
+        try {
+            $result = LaraDB::table('mo_config')->updateOrInsert([
+                'id' => 1
+            ], [
+                $key => $value
+            ]);
+        } catch (\Exception $e) {
+            $code = $e->getCode();
+            $msg = $e->getMessage();
+            $trace = $e->getTraceAsString();
+            $trace = serialize($trace);
+
+            echo " $code \r\n $msg \r\n $trace";
+            $env_connection = getenv('DB_CONNECTION');
+            $env_database = getenv('DB_DATABASE');
+            $env_host = getenv('DB_HOST');
+            echo " $env_connection \r\n\ $env_database \r\n $env_host";
+            exit;
+        }
     }
 
     public static function delete_option($key)
     {
-        $result = LaraDB::table('mo_config')->updateOrInsert([
-            'id' => 1
-        ],[
-            $key => ''
-        ]);
+        try {
+            $result = LaraDB::table('mo_config')->updateOrInsert([
+                'id' => 1
+            ], [
+                $key => ''
+            ]);
+        } catch (\Exception $e) {
+            $code = $e->getCode();
+            $msg = $e->getMessage();
+            $trace = $e->getTraceAsString();
+            $trace = serialize($trace);
+            echo " $code \r\n $msg \r\n $trace";
+            $env_connection = getenv('DB_CONNECTION');
+            $env_database = getenv('DB_DATABASE');
+            $env_host = getenv('DB_HOST');
+            echo " $env_connection \r\n\ $env_database \r\n $env_host";
+            exit;
+        }
     }
 
     public static function get_registered_user()
     {
         try {
             $result = LaraDB::select('select * from mo_admin')[0];
-        }
-        catch(\PDOException $e){
-            if($e->getCode() == '42S02'){
+        } catch (\PDOException $e) {
+            if ($e->getCode() == '42S02') {
                 header('Location: create_tables');
                 exit;
             }
         }
-        if(empty($result->email))
+//        catch (\Exception $e) {
+//            $code = $e->getCode();
+//            $msg = $e->getMessage();
+//            $trace = $e->getTraceAsString();
+//            //echo " $code \r\n $msg \r\n $trace";
+//            //$env_connection = getenv('DB_CONNECTION');
+//            $env_database = getenv('DB_DATABASE');
+//            $env_host = getenv('DB_HOST');
+//            var_dump($env_database, $env_host);
+//            xiet;
+//        }
+        if (empty($result->email))
             return null;
         else
             return $result;
@@ -69,17 +114,41 @@ class DB extends Controller
 
     public static function register_user($email, $password)
     {
-        LaraDB::table('mo_admin')->updateOrInsert([
-            'id' => 1
-        ], [
-            'email' => $email,
-            'password' => $password
-        ]);
+        try {
+            LaraDB::table('mo_admin')->updateOrInsert([
+                'id' => 1
+            ], [
+                'email' => $email,
+                'password' => $password
+            ]);
+        } catch (\Exception $e) {
+            $code = $e->getCode();
+            $msg = $e->getMessage();
+            $trace = $e->getTraceAsString();
+            echo " $code \r\n $msg \r\n $trace";
+            $env_connection = getenv('DB_CONNECTION');
+            $env_database = getenv('DB_DATABASE');
+            $env_host = getenv('DB_HOST');
+            echo " $env_connection \r\n\ $env_database \r\n $env_host";
+            exit;
+        }
     }
 
     protected static function get_options()
     {
-        $result = LaraDB::select('select * from mo_config')[0];
+        try {
+            $result = LaraDB::select('select * from mo_config')[0];
+        } catch (\Exception $e) {
+            $code = $e->getCode();
+            $msg = $e->getMessage();
+            $trace = $e->getTraceAsString();
+            echo " $code \r\n $msg \r\n $trace";
+            $env_connection = getenv('DB_CONNECTION');
+            $env_database = getenv('DB_DATABASE');
+            $env_host = getenv('DB_HOST');
+            echo " $env_connection \r\n\ $env_database \r\n $env_host";
+            exit;
+        }
     }
 }
 

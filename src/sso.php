@@ -1,4 +1,5 @@
 <?php
+
 namespace MiniOrange;
 
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ final class SSO
     public function __construct()
     {
         $pluginSettings = PluginSettings::getPluginSettings();
-        if (array_key_exists('SAMLResponse', $_REQUEST) && ! empty($_REQUEST['SAMLResponse'])) {
+        if (array_key_exists('SAMLResponse', $_REQUEST) && !empty($_REQUEST['SAMLResponse'])) {
             try {
                 $relayStateUrl = array_key_exists('RelayState', $_REQUEST) ? $_REQUEST['RelayState'] : '/';
                 $samlResponseObj = ReadResponseAction::execute(); // read the samlResponse from IDP
@@ -57,4 +58,5 @@ final class SSO
         }
     }
 }
+
 new SSO();

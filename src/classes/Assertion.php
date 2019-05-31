@@ -73,36 +73,35 @@ class Assertion
 
         if ($xml === NULL) return;
 
-		if($xml->localName === 'EncryptedAssertion')
-		{
-				$data = SAMLUtilities::xpQuery($xml, './xenc:EncryptedData');
-                $encryptedMethod = SAMLUtilities::xpQuery($xml, './xenc:EncryptedData/ds:KeyInfo/xenc:EncryptedKey');
-                $method = '';
-                if(empty($encryptedMethod)){
-                    $encryptedMethod = SAMLUtilities::xpQuery($xml, './xenc:EncryptedKey/xenc:EncryptionMethod');
-                    $method = $encryptedMethod[0]->getAttribute("Algorithm");
-                } else {
-                    $method = $encryptedMethod[0]->firstChild->getAttribute("Algorithm");
-                }
-                $algo = SAMLUtilities::getEncryptionAlgorithm($method);
-				if (count($data) === 0) {
-					throw new Exception('Missing encrypted data in <saml:EncryptedAssertion>.');
-				} elseif (count($data) > 1) {
-					throw new Exception('More than one encrypted data element in <saml:EncryptedAssertion>.');
-				}
+        if ($xml->localName === 'EncryptedAssertion') {
+            $data = SAMLUtilities::xpQuery($xml, './xenc:EncryptedData');
+            $encryptedMethod = SAMLUtilities::xpQuery($xml, './xenc:EncryptedData/ds:KeyInfo/xenc:EncryptedKey');
+            $method = '';
+            if (empty($encryptedMethod)) {
+                $encryptedMethod = SAMLUtilities::xpQuery($xml, './xenc:EncryptedKey/xenc:EncryptionMethod');
+                $method = $encryptedMethod[0]->getAttribute("Algorithm");
+            } else {
+                $method = $encryptedMethod[0]->firstChild->getAttribute("Algorithm");
+            }
+            $algo = SAMLUtilities::getEncryptionAlgorithm($method);
+            if (count($data) === 0) {
+                throw new Exception('Missing encrypted data in <saml:EncryptedAssertion>.');
+            } elseif (count($data) > 1) {
+                throw new Exception('More than one encrypted data element in <saml:EncryptedAssertion>.');
+            }
 
-				$key = new XMLSecurityKey($algo, array('type'=>'private'));
-                $path = file_get_contents(Utilities::getPrivateKey());
-                $key->loadKey($path);
+            $key = new XMLSecurityKey($algo, array('type' => 'private'));
+            $path = file_get_contents(Utilities::getPrivateKey());
+            $key->loadKey($path);
 
-                /** @todo - Alternate Key */
-                $alternateKey = new XMLSecurityKey($algo, array('type' => 'private'));
-                $path =  file_get_contents(Utilities::getAlternatePrivateKey());
-                $alternateKey->loadKey($path);
+            /** @todo - Alternate Key */
+            $alternateKey = new XMLSecurityKey($algo, array('type' => 'private'));
+            $path = file_get_contents(Utilities::getAlternatePrivateKey());
+            $alternateKey->loadKey($path);
 
-				$blacklist = array();
-				$xml = SAMLUtilities::decryptElement($data[0], $key, $blacklist, $alternateKey);
-		}
+            $blacklist = array();
+            $xml = SAMLUtilities::decryptElement($data[0], $key, $blacklist, $alternateKey);
+        }
 
         if (!$xml->hasAttribute('ID')) throw new MissingIDException;
 

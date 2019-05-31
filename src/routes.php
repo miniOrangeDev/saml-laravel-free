@@ -1,4 +1,5 @@
 <?php
+
 use MiniOrange\Classes\Actions\AuthFacadeController;
 
 Route::get('mo_admin', function () {
@@ -78,7 +79,6 @@ Route::post('support.php', function () {
 });
 
 
-
 Route::post('setup.php', function () {
     include_once 'setup.php';
     include_once 'jsLoader.php';
@@ -91,6 +91,6 @@ Route::post('how_to_setup.php', function () {
 });
 
 Route::get('sign/{email?}', 'MiniOrange\Classes\Actions\AuthFacadeController@signin');
-Route::get('create_tables','MiniOrange\Classes\Actions\DatabaseController@createTables');
+Route::get('create_tables', 'MiniOrange\Classes\Actions\DatabaseController@createTables');
 
 

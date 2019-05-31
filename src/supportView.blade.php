@@ -83,40 +83,42 @@ $verified = mo_saml_is_customer_registered() ? '' : 'disabled';
                 <div class="row">
                     <div class="col-lg-10">
                         <?php if ($verified == 'disabled') { ?> <p style="color: red;">
-                                <b>Please login with your miniOrange account in the <a href="licensing.php">Licensing</a> tab to activate the support form.</b>
-                            </p> <?php } ?>
-                         <fieldset <?php echo $verified; ?> >
-                        <form method="post" action="support.php">
-                            <p>
-                                <b>Need any help or want to upgrade to premium? We can help you in configuring the connector
-                                    with your Identity Provider. Just send us a query and we will
-                                    get back to you soon.</b>
-                            </p>
-                            <input type="hidden" name="option"
-                                   value="mo_saml_contact_us"/>
-                            <div class="form-group">
-                                <input class="form-control" type="email"
-                                       name="mo_saml_contact_us_email" placeholder="Enter your email"
-                                       required
-                                       value="">
-                            </div>
-                            <div class="form-group">
-                                <input class="form-control" type="tel"
-                                       name="mo_saml_contact_us_phone" required
-                                       pattern="[\+]\d{11,14}|[\+]\d{1,4}[\s]\d{9,10}"
-                                       placeholder="We call only if you do. 	( eg.+1 9876543210, +91 1234567890 )">
-                            </div>
-                            <div class="form-group">
+                            <b>Please login with your miniOrange account in the <a href="licensing.php">Licensing</a>
+                                tab to activate the support form.</b>
+                        </p> <?php } ?>
+                        <fieldset <?php echo $verified; ?> >
+                            <form method="post" action="support.php">
+                                <p>
+                                    <b>Need any help or want to upgrade to premium? We can help you in configuring the
+                                        connector
+                                        with your Identity Provider. Just send us a query and we will
+                                        get back to you soon.</b>
+                                </p>
+                                <input type="hidden" name="option"
+                                       value="mo_saml_contact_us"/>
+                                <div class="form-group">
+                                    <input class="form-control" type="email"
+                                           name="mo_saml_contact_us_email" placeholder="Enter your email"
+                                           required
+                                           value="">
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" type="tel"
+                                           name="mo_saml_contact_us_phone" required
+                                           pattern="[\+]\d{11,14}|[\+]\d{1,4}[\s]\d{9,10}"
+                                           placeholder="We call only if you do. 	( eg.+1 9876543210, +91 1234567890 )">
+                                </div>
+                                <div class="form-group">
 								<textarea class="form-control" name="mo_saml_contact_us_query"
                                           required placeholder="Enter your query here"
                                           onkeypress="mo_saml_valid_query(this)"
                                           onkeyup="mo_saml_valid_query(this)"
                                           onblur="mo_saml_valid_query(this)"></textarea>
-                            </div>
-                            <div class="tile-footer">
-                                <button class="btn btn-primary" type="submit" name="submit">Submit</button>
-                            </div>
-                        </form>
+                                </div>
+                                <div class="tile-footer">
+                                    <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+                                </div>
+                            </form>
                     </div>
                 </div>
 

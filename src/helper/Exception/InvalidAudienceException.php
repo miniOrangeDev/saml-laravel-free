@@ -11,14 +11,14 @@ use MiniOrange\Helper\Messages;
  */
 class InvalidAudienceException extends SAMLResponseException
 {
-	public function __construct($expect,$found,$xml) 
-	{
-		$message 	= Messages::parse('INVALID_AUDIENCE',array('expect'=>$expect,'found'=>$found));
-		$code 		= 108;		
+    public function __construct($expect, $found, $xml)
+    {
+        $message = Messages::parse('INVALID_AUDIENCE', array('expect' => $expect, 'found' => $found));
+        $code = 108;
         parent::__construct($message, $code, $xml, FALSE);
     }
 
-    public function __toString() 
+    public function __toString()
     {
         return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
     }

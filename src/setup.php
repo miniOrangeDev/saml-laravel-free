@@ -1,18 +1,34 @@
 <?php
+
 use MiniOrange\Helper\DB as DB;
-if (! isset($_SESSION)) {
+
+if (!isset($_SESSION)) {
     session_id("connector");
     session_start();
 }
 
 if (!isset($_SESSION['authorized'])) {
-        header('Location: admin_login.php');
-        exit();
-}
-else{
-    if($_SESSION['authorized'] != true){
+    header('Location: admin_login.php');
+    exit();
+} else {
+    if ($_SESSION['authorized'] != true) {
         header('Location: admin_login.php');
     }
+}
+
+// Check db connection by getting registered user
+try {
+    $user = DB::get_registered_user();
+} catch (\Exception $e) {
+    $code = $e->getCode();
+    $msg = $e->getMessage();
+    $trace = $e->getTraceAsString();
+    $env_con = getenv('DB_CONNECTION');
+    $env_db = getenv('DB_DATABASE');
+    $env_host = getenv('DB_HOST');
+    $config = config('database.driver');
+    echo nl2br("$code \n $msg  \n DB_CONNECTION : $env_con \n DB_DATABASE : $env_db \n DB_HOST : $env_host\n If the above configuration report is empty or incomplete, run <b>php artisan config:clear</b> in your command-line, check your <b>.env</b> file and please try again.  \n\nTRACE : \n $trace");
+    exit;
 }
 
 if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
@@ -31,7 +47,7 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
         DB::update_option('mo_saml_message', 'All the fields are required. Please enter valid entries.');
         mo_saml_show_error_message();
         return;
-    } else if (! preg_match("/^\w*$/", $_POST['idp_name'])) {
+    } else if (!preg_match("/^\w*$/", $_POST['idp_name'])) {
         DB::update_option('mo_saml_message', 'Please match the requested format for Identity Provider Name. Only alphabets, numbers and underscore is allowed.');
         mo_saml_show_error_message();
         return;
@@ -59,7 +75,7 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
         DB::update_option('sp_entity_id', $sp_entity_id);
         DB::update_option('acs_url', $acs_url);
         DB::update_option('single_logout_url', $single_logout_url);
-        DB::update_option('relaystate_url',$relaystate_url);
+        DB::update_option('relaystate_url', $relaystate_url);
         DB::update_option('mo_saml_message', 'Settings saved successfully.');
         mo_saml_show_success_message();
         if (empty($saml_x509_certificate)) {
@@ -68,7 +84,7 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
         }
 
         $saml_x509_certificate = sanitize_certificate($saml_x509_certificate);
-        if (! @openssl_x509_read($saml_x509_certificate)) {
+        if (!@openssl_x509_read($saml_x509_certificate)) {
             DB::update_option('mo_saml_message', 'Invalid certificate: Please provide a valid certificate.');
             mo_saml_show_error_message();
             DB::delete_option('saml_x509_certificate');
@@ -77,14 +93,13 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
 }
 
 if (isset($_POST['option']) && $_POST['option'] == 'attribute_mapping') {
-    if (isset($_POST['saml_am_email']) && ! empty($_POST['saml_am_email'])) {
+    if (isset($_POST['saml_am_email']) && !empty($_POST['saml_am_email'])) {
         DB::update_option('saml_am_email', 'NameID');
     }
-    if (isset($_POST['saml_am_username']) && ! empty($_POST['saml_am_username'])) {
+    if (isset($_POST['saml_am_username']) && !empty($_POST['saml_am_username'])) {
         DB::update_option('saml_am_username', 'NameID');
     }
 }
-
 
 
 ?>

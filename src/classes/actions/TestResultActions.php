@@ -23,16 +23,16 @@ class TestResultActions
     private $nameId;
 
     private $template = '<div style="font-family:Calibri;padding:0 3%%;">{{header}}{{commonbody}}{{footer}}</div>';
-    private $successHeader  = ' <div style="color: #3c763d;background-color: #dff0d8; padding:2%%;margin-bottom:20px;text-align:center; 
+    private $successHeader = ' <div style="color: #3c763d;background-color: #dff0d8; padding:2%%;margin-bottom:20px;text-align:center; 
                                     border:1px solid #AEDB9A; font-size:18pt;">TEST SUCCESSFUL
                                 </div>
                                 <div style="display:block;text-align:center;margin-bottom:4%%;"><img style="width:15%%;" src="{{right}}"></div>';
 
-    private $errorHeader    = ' <div style="color: #a94442;background-color: #f2dede;padding: 15px;margin-bottom: 20px;text-align:center;
+    private $errorHeader = ' <div style="color: #a94442;background-color: #f2dede;padding: 15px;margin-bottom: 20px;text-align:center;
                                     border:1px solid #E6B3B2;font-size:18pt;">TEST FAILED
                                 </div><div style="display:block;text-align:center;margin-bottom:4%%;"><img style="width:15%%;"src="{{wrong}}"></div>';
 
-    private $commonBody  = '<span style="font-size:14pt;"><b>Hello</b>, {{email}}</span><br/>
+    private $commonBody = '<span style="font-size:14pt;"><b>Hello</b>, {{email}}</span><br/>
                                 <p style="font-weight:bold;font-size:14pt;margin-left:1%%;">ATTRIBUTES RECEIVED:</p>
                                 <table style="border-collapse:collapse;border-spacing:0; display:table;width:100%%; 
                                     font-size:14pt;background-color:#EDEDED;">
@@ -68,15 +68,15 @@ class TestResultActions
                                     box-sizing: border-box;border-color: #0073AA;box-shadow: 0px 1px 0px rgba(120, 200, 230, 0.6) inset;
                                     color: #FFF;"type="button" value="Done" onClick="self.close();"></div>';
 
-    private $tableContent   = "<tr><td style='font-weight:bold;border:2px solid #949090;padding:2%%;'>{{key}}</td><td style='padding:2%%;
+    private $tableContent = "<tr><td style='font-weight:bold;border:2px solid #949090;padding:2%%;'>{{key}}</td><td style='padding:2%%;
                                     border:2px solid #949090; word-wrap:break-word;'>{{value}}</td></tr>";
 
 
     public function __construct($attrs, SAMLResponseException $samlResponseException = null)
     {
         $this->attrs = $attrs;
-        if(isset($attrs['NameID']))
-        $this->nameId = $attrs["NameID"];
+        if (isset($attrs['NameID']))
+            $this->nameId = $attrs["NameID"];
         $this->hasExceptionOccurred = Utilities::isBlank($samlResponseException) ? FALSE : TRUE;
         $this->samlException = $samlResponseException;
     }
@@ -88,7 +88,7 @@ class TestResultActions
     {
         ob_clean();
         $this->processTemplateHeader();
-        if(!$this->hasExceptionOccurred) $this->processTemplateContent();
+        if (!$this->hasExceptionOccurred) $this->processTemplateContent();
         else $this->processExceptionTemplate();
         $this->processTemplateFooter();
         printf($this->template);
@@ -102,10 +102,10 @@ class TestResultActions
     private function processTemplateHeader()
     {
         $header = Utilities::isBlank($this->nameId) ? $this->errorHeader : $this->successHeader;
-        $header = str_replace("{{right}}","miniorange/sso/resources/images/right.png",$header);
+        $header = str_replace("{{right}}", "miniorange/sso/resources/images/right.png", $header);
         //var_dump($header);exit;
-        $header = str_replace("{{wrong}}","miniorange/sso/resources/images/wrong.png",$header);
-        $this->template = str_replace("{{header}}",$header,$this->template);
+        $header = str_replace("{{wrong}}", "miniorange/sso/resources/images/wrong.png", $header);
+        $this->template = str_replace("{{header}}", $header, $this->template);
     }
 
 
@@ -114,12 +114,12 @@ class TestResultActions
      */
     private function processExceptionTemplate()
     {
-        $this->exceptionBody = str_replace("{{exceptionmessage}}",$this->samlException->getMessage(),$this->exceptionBody);
-        $this->exceptionBody = str_replace("{{certErrorDiv}}",$this->processCertErrors(),$this->exceptionBody);
+        $this->exceptionBody = str_replace("{{exceptionmessage}}", $this->samlException->getMessage(), $this->exceptionBody);
+        $this->exceptionBody = str_replace("{{certErrorDiv}}", $this->processCertErrors(), $this->exceptionBody);
         $response = $this->samlException instanceof SAMLResponseException ? $this->samlException->getSamlResponse() : "";
-        $this->samlResponse = str_replace("{{samlresponse}}",$response,$this->samlResponse);
-        $this->exceptionBody = str_replace("{{samlResponseDiv}}",$this->samlResponse,$this->exceptionBody);
-        $this->template = str_replace("{{commonbody}}",$this->exceptionBody,$this->template);
+        $this->samlResponse = str_replace("{{samlresponse}}", $response, $this->samlResponse);
+        $this->exceptionBody = str_replace("{{samlResponseDiv}}", $this->samlResponse, $this->exceptionBody);
+        $this->template = str_replace("{{commonbody}}", $this->exceptionBody, $this->template);
     }
 
 
@@ -128,12 +128,11 @@ class TestResultActions
      */
     private function processCertErrors()
     {
-        if($this->samlResponse instanceof SAMLResponseException && $this->samlException->isCertError())
-        {
+        if ($this->samlResponse instanceof SAMLResponseException && $this->samlException->isCertError()) {
             $pluginCert = SAMLUtilities::sanitize_certificate($this->samlException->getPluginCert());
             $certFromIDP = SAMLUtilities::sanitize_certificate($this->samlException->getCertInResponse());
-            $this->certError = str_replace("{{certinplugin}}",$pluginCert,$this->certError);
-            $this->certError = str_replace("{{certfromresponse}}",$certFromIDP,$this->certError);
+            $this->certError = str_replace("{{certinplugin}}", $pluginCert, $this->certError);
+            $this->certError = str_replace("{{certfromresponse}}", $certFromIDP, $this->certError);
             return $this->certError;
         }
         return "";
@@ -145,10 +144,10 @@ class TestResultActions
      */
     private function processTemplateContent()
     {
-        $this->commonBody = str_replace("{{email}}",implode("/",$this->nameId),$this->commonBody);
+        $this->commonBody = str_replace("{{email}}", implode("/", $this->nameId), $this->commonBody);
         $tableContent = !array_filter($this->attrs) ? "No Attributes Received." : $this->getTableContent();
-        $this->commonBody = str_replace("{{tablecontent}}",$tableContent,$this->commonBody);
-        $this->template = str_replace("{{commonbody}}",$this->commonBody,$this->template);
+        $this->commonBody = str_replace("{{tablecontent}}", $tableContent, $this->commonBody);
+        $this->template = str_replace("{{commonbody}}", $this->commonBody, $this->template);
     }
 
 
@@ -159,11 +158,10 @@ class TestResultActions
     private function getTableContent()
     {
         $tableContent = '';
-        foreach ($this->attrs as $key => $value)
-        {
-            if(!in_array(null, $value))
-                $tableContent .= str_replace("{{key}}",$key,str_replace("{{value}}",
-                    implode("<br/>",$value),$this->tableContent));
+        foreach ($this->attrs as $key => $value) {
+            if (!in_array(null, $value))
+                $tableContent .= str_replace("{{key}}", $key, str_replace("{{value}}",
+                    implode("<br/>", $value), $this->tableContent));
         }
         return $tableContent;
     }
@@ -174,6 +172,6 @@ class TestResultActions
      */
     private function processTemplateFooter()
     {
-        $this->template = str_replace("{{footer}}",$this->footer,$this->template);
+        $this->template = str_replace("{{footer}}", $this->footer, $this->template);
     }
 }

@@ -1,50 +1,19 @@
 <?php
+
 use MiniOrange\Helper\DB as DB;
 use MiniOrange\Helper\Lib\AESEncryption;
 use Illuminate\Support\Facades\Schema;
 use MiniOrange\Helper\Constants;
 use MiniOrange\Classes\Actions\DatabaseController as DBinstaller;
 
-if (! defined('MSSP_VERSION'))
+if (!defined('MSSP_VERSION'))
     define('MSSP_VERSION', '1.0.0');
-if (! defined('MSSP_NAME'))
+if (!defined('MSSP_NAME'))
     define('MSSP_NAME', basename(__DIR__));
-if (! defined('MSSP_DIR'))
+if (!defined('MSSP_DIR'))
     define('MSSP_DIR', __DIR__);
-if (! defined('MSSP_TEST_MODE'))
+if (!defined('MSSP_TEST_MODE'))
     define('MSSP_TEST_MODE', FALSE);
-
-// check if the directory containing CSS,JS,Resources exists in the root folder of the site
-if (! is_dir($_SERVER['DOCUMENT_ROOT'] . '/miniorange/sso')) {
-    // copy miniorange css,js,images,etc assets to root folder of laravel app
-    $file_paths_array = array(
-        '/includes',
-        '/resources'
-    );
-    foreach ($file_paths_array as $path) {
-        $src = __DIR__ . $path;
-        $dst = $_SERVER['DOCUMENT_ROOT'] . "/miniorange/sso" . $path;
-        recurse_copy($src, $dst);
-    }
-}
-
-// recursive function to copy files within directory
-function recurse_copy($src, $dst)
-{
-    $dir = opendir($src);
-
-    @mkdir($dst, 0777, true);
-    while (false !== ($file = readdir($dir))) {
-        if (($file != '.') && ($file != '..')) {
-            if (is_dir($src . '/' . $file)) {
-                recurse_copy($src . '/' . $file, $dst . '/' . $file);
-            } else {
-                copy($src . '/' . $file, $dst . '/' . $file);
-            }
-        }
-    }
-    closedir($dir);
-}
 
 if (isset($_SERVER['REQUEST_URI'])) {
     if ($_SERVER['REQUEST_URI'] == '/login') {
@@ -66,20 +35,38 @@ if (isset($_SERVER['REQUEST_URI'])) {
     }
 }
 
+// recursive function to copy files within directory
+function recurse_copy($src, $dst)
+{
+    $dir = opendir($src);
+
+    @mkdir($dst, 0777, true);
+    while (false !== ($file = readdir($dir))) {
+        if (($file != '.') && ($file != '..')) {
+            if (is_dir($src . '/' . $file)) {
+                recurse_copy($src . '/' . $file, $dst . '/' . $file);
+            } else {
+                copy($src . '/' . $file, $dst . '/' . $file);
+            }
+        }
+    }
+    closedir($dir);
+}
+
 function checkPasswordpattern($password)
 {
     $pattern = '/^[(\w)*(\!\@\#\$\%\^\&\*\.\-\_)*]+$/';
 
-    return ! preg_match($pattern, $password);
+    return !preg_match($pattern, $password);
 }
 
 function mo_saml_show_success_message()
 {
     if (isset($_SESSION['show_error_msg']))
         unset($_SESSION['show_error_msg']);
-    if(!isset($_SESSION)){
-    session_id('connector');
-    session_start();
+    if (!isset($_SESSION)) {
+        session_id('connector');
+        session_start();
     }
     $_SESSION['show_success_msg'] = 1;
 }
@@ -88,15 +75,16 @@ function mo_saml_show_error_message()
 {
     if (isset($_SESSION['show_success_msg']))
         unset($_SESSION['show_success_msg']);
-    if(!isset($_SESSION)){
-    session_id('connector');
-    session_start();}
+    if (!isset($_SESSION)) {
+        session_id('connector');
+        session_start();
+    }
     $_SESSION['show_error_msg'] = 1;
 }
 
 function mo_saml_check_empty_or_null($value)
 {
-    if (! isset($value) || empty($value)) {
+    if (!isset($value) || empty($value)) {
         return true;
     }
     return false;
@@ -115,6 +103,7 @@ function is_user_registered()
 {
     return DB::get_registered_user();
 }
+
 function mo_saml_is_customer_registered_saml($check_guest = true)
 {
     $email = DB::get_option('mo_saml_admin_email');
@@ -122,12 +111,13 @@ function mo_saml_is_customer_registered_saml($check_guest = true)
 
     if (mo_saml_is_guest_enabled() && $check_guest)
         return 1;
-    if (! $email || ! $customerKey || ! is_numeric(trim($customerKey))) {
+    if (!$email || !$customerKey || !is_numeric(trim($customerKey))) {
         return 0;
     } else {
         return 1;
     }
 }
+
 function mo_saml_is_guest_enabled()
 {
     $guest_enabled = DB::get_option('mo_saml_guest_enabled');
@@ -138,12 +128,13 @@ function mo_saml_is_customer_registered()
 {
     $email = DB::get_option('mo_saml_admin_email');
     $customerKey = DB::get_option('mo_saml_admin_customer_key');
-    if (! $email || ! $customerKey || ! is_numeric(trim($customerKey))) {
+    if (!$email || !$customerKey || !is_numeric(trim($customerKey))) {
         return false;
     } else {
         return true;
     }
 }
+
 function mo_register_action()
 {
 
@@ -170,6 +161,7 @@ function mo_register_action()
         mo_saml_show_error_message();
     }
 }
+
 function create_customer()
 {
     $customer = new CustomerSaml();
@@ -198,6 +190,7 @@ function create_customer()
     DB::update_option('mo_saml_admin_password', '');
     return $response;
 }
+
 function get_current_customer()
 {
     $customer = new CustomerSaml();
@@ -239,44 +232,45 @@ function mo_saml_show_customer_details()
                style="background-color: #FFFFFF; border: 1px solid #CCCCCC; border-collapse: collapse; padding: 0px 0px 0px 10px; margin: 2px; width: 85%">
             <tr>
                 <td style="width: 45%; padding: 10px;">miniOrange Account Email</td>
-                <td style="width: 55%; padding: 10px;"><?php echo DB::get_option( 'mo_saml_admin_email' ); ?></td>
+                <td style="width: 55%; padding: 10px;"><?php echo DB::get_option('mo_saml_admin_email'); ?></td>
             </tr>
             <tr>
                 <td style="width: 45%; padding: 10px;">Customer ID</td>
-                <td style="width: 55%; padding: 10px;"><?php echo DB::get_option( 'mo_saml_admin_customer_key' ) ?></td>
+                <td style="width: 55%; padding: 10px;"><?php echo DB::get_option('mo_saml_admin_customer_key') ?></td>
             </tr>
         </table>
-        <br /> <br />
+        <br/> <br/>
 
         <table>
             <tr>
                 <td>
                     <form name="f1" method="post" action="licensing.php" id="mo_saml_goto_login_form"
                           style="margin-block-end: auto;">
-                        <input type="hidden" value="change_miniorange" name="option" /> <input
-                            type="submit" value="Change miniOrange Account" class="btn btn-primary" />
+                        <input type="hidden" value="change_miniorange" name="option"/> <input
+                                type="submit" value="Change miniOrange Account" class="btn btn-primary"/>
                     </form>
                 </td>
                 <td>
-                    <a href="#"><input type="button" class="btn btn-primary"  onclick="upgradeform('laravel_')" value="Upgrade to Premium"/></a>
+                    <a href="#"><input type="button" class="btn btn-primary" onclick="upgradeform('laravel_')"
+                                       value="Upgrade to Premium"/></a>
                 </td>
             </tr>
         </table>
 
-        <br />
+        <br/>
         <form style="display: none;" id="loginform"
-              action="<?php echo DB::get_option( 'mo_saml_host_name' ) . '/moas/login'; ?>"
+              action="<?php echo DB::get_option('mo_saml_host_name') . '/moas/login'; ?>"
               target="_blank" method="post">
             <input type="email" name="username"
-                   value="<?php echo DB::get_option( 'mo_saml_admin_email' ); ?>" /> <input
-                type="text" name="redirectUrl"
-                value="<?php echo DB::get_option( 'mo_saml_host_name' ) . '/moas/initializepayment'; ?>" />
-            <input type="text" name="requestOrigin" id="requestOrigin" />
+                   value="<?php echo DB::get_option('mo_saml_admin_email'); ?>"/> <input
+                    type="text" name="redirectUrl"
+                    value="<?php echo DB::get_option('mo_saml_host_name') . '/moas/initializepayment'; ?>"/>
+            <input type="text" name="requestOrigin" id="requestOrigin"/>
         </form>
         <script>
             function upgradeform(planType) {
                 jQuery('#requestOrigin').val(planType);
-                if(jQuery('#mo_customer_registered').val()==1)
+                if (jQuery('#mo_customer_registered').val() == 1)
                     jQuery('#loginform').submit();
 
             }
@@ -284,6 +278,7 @@ function mo_saml_show_customer_details()
     </div>
     <?php
 }
+
 function mo_saml_remove_account()
 {
     DB::delete_option('mo_saml_new_registration');
@@ -299,6 +294,7 @@ function mo_saml_remove_account()
     DB::delete_option('mo_saml_idp_config_complete');
     DB::update_option('mo_saml_new_registration', true);
 }
+
 function mo_saml_show_registration_page()
 {
     ?>
@@ -314,7 +310,8 @@ function mo_saml_show_registration_page()
                 You should register so that in case you need help, we can help you with step by step
                 instructions. We support all known IdPs - ADFS, Okta, Salesforce, Shibboleth,
                 SimpleSAMLphp, OpenAM, Centrify, Ping, RSA, IBM, Oracle, OneLogin, Bitium, WSO2 etc.
-                <b>You will also need a miniOrange account to upgrade to the premium version of the connector.</b> We do not store any information except the email that you will use to register with us.
+                <b>You will also need a miniOrange account to upgrade to the premium version of the connector.</b> We do
+                not store any information except the email that you will use to register with us.
             </div>
             <br/>
             <div class="col-lg-8">
@@ -356,7 +353,8 @@ function mo_saml_show_registration_page()
 
                         </td>
                     </tr>
-                </table></div>
+                </table>
+            </div>
         </div>
     </form>
     <form name="f1" method="post" action="licensing.php" id="mo_saml_goto_login_form">
@@ -377,6 +375,7 @@ function mo_saml_show_registration_page()
     </script>
     <?php
 }
+
 function mo_saml_show_verify_password_page()
 {
     ?>
@@ -442,6 +441,7 @@ function mo_saml_show_verify_password_page()
     </script>
     <?php
 }
+
 function sanitize_certificate($certificate)
 {
     $certificate = trim($certificate);

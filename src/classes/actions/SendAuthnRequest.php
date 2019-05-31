@@ -1,4 +1,5 @@
 <?php
+
 namespace MiniOrange\Classes\Actions;
 
 use MiniOrange\Classes\AuthnRequest;
@@ -20,7 +21,7 @@ class SendAuthnRequest
     {
         $pluginSettings = PluginSettings::getPluginSettings();
 
-        if (! Utilities::isSPConfigured())
+        if (!Utilities::isSPConfigured())
             throw new NoIdentityProviderConfiguredException();
 
         $relayState = isset($_REQUEST['RelayState']) ? $_REQUEST['RelayState'] : '/';

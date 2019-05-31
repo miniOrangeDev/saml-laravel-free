@@ -11,7 +11,7 @@ use MiniOrange\Helper\Lib\XMLSecLibs\XMLSecurityKey;
 use MiniOrange\Helper\Lib\XMLSecLibs\XMLSecEnc;
 use MiniOrange\Helper\Lib\XMLSecLibs\XMLSecurityDSig;
 
-/** @todo - optimize this class  */
+/** @todo - optimize this class */
 class SAMLUtilities
 {
 
@@ -23,7 +23,7 @@ class SAMLUtilities
     public static function stringToHex($bytes)
     {
         $ret = '';
-        for($i = 0; $i < strlen($bytes); $i++) {
+        for ($i = 0; $i < strlen($bytes); $i++) {
             $ret .= sprintf('%02x', ord($bytes[$i]));
         }
         return $ret;
@@ -36,7 +36,7 @@ class SAMLUtilities
 
     public static function generateTimestamp($instant = NULL)
     {
-        if($instant === NULL) {
+        if ($instant === NULL) {
             $instant = time();
         }
         return gmdate('Y-m-d\TH:i:s\Z', $instant);
@@ -91,15 +91,15 @@ class SAMLUtilities
         // We use a very strict regex to parse the timestamp.
         $regex = '/^(\\d\\d\\d\\d)-(\\d\\d)-(\\d\\d)T(\\d\\d):(\\d\\d):(\\d\\d)(?:\\.\\d+)?Z$/D';
         if (preg_match($regex, $time, $matches) == 0) {
-            throw new Exception("Invalid SAML2 timestamp passed to xsDateTimeToTimestamp: ".$time);
+            throw new Exception("Invalid SAML2 timestamp passed to xsDateTimeToTimestamp: " . $time);
         }
 
         // Extract the different components of the time from the  matches in the regex.
         // intval will ignore leading zeroes in the string.
-        $year   = intval($matches[1]);
-        $month  = intval($matches[2]);
-        $day    = intval($matches[3]);
-        $hour   = intval($matches[4]);
+        $year = intval($matches[1]);
+        $month = intval($matches[2]);
+        $day = intval($matches[3]);
+        $hour = intval($matches[4]);
         $minute = intval($matches[5]);
         $second = intval($matches[6]);
 
@@ -115,9 +115,9 @@ class SAMLUtilities
      *
      * This is an internal helper function.
      *
-     * @param  DOMElement     $encryptedData The encrypted data.
-     * @param  XMLSecurityKey $inputKey      The decryption key.
-     * @param  array          &$blacklist    Blacklisted decryption algorithms.
+     * @param  DOMElement $encryptedData The encrypted data.
+     * @param  XMLSecurityKey $inputKey The decryption key.
+     * @param  array          &$blacklist Blacklisted decryption algorithms.
      * @return DOMElement     The decrypted element.
      * @throws Exception
      */
@@ -153,7 +153,7 @@ class SAMLUtilities
             }
             /* Make sure that the input key format is the same as the one used to encrypt the key. */
             if ($inputKeyAlgo !== $symKeyInfoAlgo) {
-                throw new Exception( 'Algorithm mismatch between input key and key used to encrypt ' .
+                throw new Exception('Algorithm mismatch between input key and key used to encrypt ' .
                     ' the symmetric key for the message. Key was: ' .
                     var_export($inputKeyAlgo, TRUE) . '; message was: ' .
                     var_export($symKeyInfoAlgo, TRUE));
@@ -197,7 +197,7 @@ class SAMLUtilities
             $symKeyAlgo = $symmetricKey->getAlgorith();
             /* Make sure that the input key has the correct format. */
             if ($inputKeyAlgo !== $symKeyAlgo) {
-                throw new Exception( 'Algorithm mismatch between input key and key in message. ' .
+                throw new Exception('Algorithm mismatch between input key and key in message. ' .
                     'Key was: ' . var_export($inputKeyAlgo, TRUE) . '; message was: ' .
                     var_export($symKeyAlgo, TRUE));
             }
@@ -214,7 +214,7 @@ class SAMLUtilities
          * tree was serialized for encryption. In that case, we may miss the
          * namespaces needed to parse the XML.
          */
-        $xml = '<root xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" '.
+        $xml = '<root xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ' .
             'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' .
             $decrypted .
             '</root>';
@@ -254,7 +254,7 @@ class SAMLUtilities
             try {
                 //echo "trying secondary";
                 return self::doDecryptElement($encryptedData, $alternateKey, $blacklist);
-            } catch(Exception $t) {
+            } catch (Exception $t) {
                 throw new Exception('Failed to decrypt XML element.');
             }
             /*
@@ -315,7 +315,7 @@ class SAMLUtilities
 
         /* Check that $root is one of the signed nodes. */
         $rootSigned = FALSE;
-        /** @var DomNode$signedNode */
+        /** @var DomNode $signedNode */
         foreach ($objXMLSecDSig->getValidatedNodes() as $signedNode) {
             if ($signedNode->isSameNode($root)) {
                 $rootSigned = TRUE;
@@ -376,7 +376,7 @@ class SAMLUtilities
         }
 
         /* Check the signature. */
-        if (! $objXMLSecDSig->verify($key)) {
+        if (!$objXMLSecDSig->verify($key)) {
             throw new Exception('Unable to validate Sgnature');
         }
     }
@@ -403,7 +403,7 @@ class SAMLUtilities
             throw new Exception('Missing key in public key details.');
         }
 
-        $newKey = new XMLSecurityKey($algorithm, array('type'=>$type));
+        $newKey = new XMLSecurityKey($algorithm, array('type' => $type));
         $newKey->loadKey($keyInfo['key']);
 
         return $newKey;
@@ -438,10 +438,10 @@ class SAMLUtilities
         $fpArray = array();
         $fpArray[] = $certFingerprint;
         $pemCert = self::findCertificate($fpArray, $certificates);
-        if($pemCert===FALSE) return FALSE;
+        if ($pemCert === FALSE) return FALSE;
         $lastException = NULL;
 
-        $key = new XMLSecurityKey(XMLSecurityKey::RSA_SHA256, array('type'=>'public'));
+        $key = new XMLSecurityKey(XMLSecurityKey::RSA_SHA256, array('type' => 'public'));
         $key->loadKey($pemCert);
 
         try {
@@ -489,9 +489,9 @@ class SAMLUtilities
     /**
      * Parse a boolean attribute.
      *
-     * @param  \DOMElement $node          The element we should fetch the attribute from.
-     * @param  string     $attributeName The name of the attribute.
-     * @param  mixed      $default       The value that should be returned if the attribute doesn't exist.
+     * @param  \DOMElement $node The element we should fetch the attribute from.
+     * @param  string $attributeName The name of the attribute.
+     * @param  mixed $default The value that should be returned if the attribute doesn't exist.
      * @return bool|mixed The value of the attribute, or $default if the attribute doesn't exist.
      * @throws Exception
      */
@@ -516,17 +516,18 @@ class SAMLUtilities
     /**
      * Insert a Signature-node.
      *
-     * @param XMLSecurityKey $key           The key we should use to sign the message.
-     * @param array          $certificates  The certificates we should add to the signature node.
-     * @param DOMElement     $root          The XML node we should sign.
-     * @param DomNode       $insertBefore  The XML element we should insert the signature element before.
+     * @param XMLSecurityKey $key The key we should use to sign the message.
+     * @param array $certificates The certificates we should add to the signature node.
+     * @param DOMElement $root The XML node we should sign.
+     * @param DomNode $insertBefore The XML element we should insert the signature element before.
      */
     public static function insertSignature(
         XMLSecurityKey $key,
         array $certificates,
         DOMElement $root,
         DomNode $insertBefore = NULL
-    ) {
+    )
+    {
         $objXMLSecDSig = new XMLSecurityDSig();
         $objXMLSecDSig->setCanonicalMethod(XMLSecurityDSig::EXC_C14N);
 
@@ -561,17 +562,17 @@ class SAMLUtilities
 
     public static function signXML($xml, $publicCertificate, $privateKey, $insertBeforeTagName = "")
     {
-        $param =array( 'type' => 'private');
+        $param = array('type' => 'private');
         $key = new XMLSecurityKey(XMLSecurityKey::RSA_SHA256, $param);
         $key->loadKey($privateKey);
         $document = new DOMDocument();
         $document->loadXML($xml);
         $element = $document->firstChild;
-        if( !empty($insertBeforeTagName) ) {
-            $domNode= $document->getElementsByTagName( $insertBeforeTagName )->item(0);
-            self::insertSignature($key, array ( $publicCertificate ), $element, $domNode);
+        if (!empty($insertBeforeTagName)) {
+            $domNode = $document->getElementsByTagName($insertBeforeTagName)->item(0);
+            self::insertSignature($key, array($publicCertificate), $element, $domNode);
         } else {
-            self::insertSignature($key, array ( $publicCertificate ), $element);
+            self::insertSignature($key, array($publicCertificate), $element);
         }
         $requestXML = $element->ownerDocument->saveXML($element);
         return $requestXML;
@@ -580,8 +581,7 @@ class SAMLUtilities
 
     public static function getEncryptionAlgorithm($method)
     {
-        switch($method)
-        {
+        switch ($method) {
             case 'http://www.w3.org/2001/04/xmlenc#tripledes-cbc':
                 return XMLSecurityKey::TRIPLEDES_CBC;
 
@@ -616,27 +616,29 @@ class SAMLUtilities
                 return XMLSecurityKey::RSA_SHA512;
 
             default:
-                throw new Exception('Invalid Encryption Method: '.$method);
+                throw new Exception('Invalid Encryption Method: ' . $method);
         }
     }
 
-    public static function sanitize_certificate( $certificate ) {
+    public static function sanitize_certificate($certificate)
+    {
         $certificate = preg_replace("/[\r\n]+/", "", $certificate);
-        $certificate = str_replace( "-", "", $certificate );
-        $certificate = str_replace( "BEGIN CERTIFICATE", "", $certificate );
-        $certificate = str_replace( "END CERTIFICATE", "", $certificate );
-        $certificate = str_replace( " ", "", $certificate );
+        $certificate = str_replace("-", "", $certificate);
+        $certificate = str_replace("BEGIN CERTIFICATE", "", $certificate);
+        $certificate = str_replace("END CERTIFICATE", "", $certificate);
+        $certificate = str_replace(" ", "", $certificate);
         $certificate = chunk_split($certificate, 64, "\r\n");
         $certificate = "-----BEGIN CERTIFICATE-----\r\n" . $certificate . "-----END CERTIFICATE-----";
         return $certificate;
     }
 
-    public static function desanitize_certificate( $certificate ) {
+    public static function desanitize_certificate($certificate)
+    {
         $certificate = preg_replace("/[\r\n]+/", "", $certificate);
         //$certificate = str_replace( "-", "", $certificate );
-        $certificate = str_replace( "-----BEGIN CERTIFICATE-----", "", $certificate );
-        $certificate = str_replace( "-----END CERTIFICATE-----", "", $certificate );
-        $certificate = str_replace( " ", "", $certificate );
+        $certificate = str_replace("-----BEGIN CERTIFICATE-----", "", $certificate);
+        $certificate = str_replace("-----END CERTIFICATE-----", "", $certificate);
+        $certificate = str_replace(" ", "", $certificate);
         //$certificate = chunk_split($certificate, 64, "\r\n");
         //$certificate = "-----BEGIN CERTIFICATE-----\r\n" . $certificate . "-----END CERTIFICATE-----";
         return $certificate;
@@ -648,7 +650,7 @@ class SAMLUtilities
         $chars_len = strlen($chars);
         $uniqueID = "";
         for ($i = 0; $i < $length; $i++)
-            $uniqueID .= substr($chars,rand(0,15),1);
-        return 'a'.$uniqueID;
+            $uniqueID .= substr($chars, rand(0, 15), 1);
+        return 'a' . $uniqueID;
     }
 }

@@ -1,32 +1,33 @@
 {
-	"name" : "devasyadave/saml-free-test",
-	"description" : "Provides functionality to plugin",
-	"license" : "BSD-3-Clause",
-	"authors" : [{
-			"name" : "devasyadave",
-			"email" : "devasyadave@gmail.com"
-		}
-	],
-	"require" : {
-		"php" : "^5.1 || ^7.1",
-		"laravel/framework" : ">=5.2"
-	},
-	"autoload" : {
-		"files" : [
-			"src/connector.php"
-		],
-		"classmap" : [
-			"src/"
-		],
-		"psr-4" : {
-			"provider\\" : "provider/"
-		}
-	},
-	"extra" : {
-		"laravel" : {
-			"providers" : [
-				"provider\\ssoServiceProvider"
-			]
-		}
-	}
+  "name": "devasyadave/saml-free-test",
+  "description": "Provides functionality to plugin",
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "devasyadave",
+      "email": "devasyadave@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^5.1 || ^7.1",
+    "laravel/framework": ">=5.2"
+  },
+  "autoload": {
+    "files": [
+      "src/connector.php"
+    ],
+    "classmap": [
+      "src/"
+    ],
+    "psr-4": {
+      "provider\\": "provider/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "provider\\ssoServiceProvider"
+      ]
+    }
+  }
 }

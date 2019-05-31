@@ -28,38 +28,38 @@ class SamlResponse
     public function __construct(DOMElement $xml = NULL)
     {
         $this->assertions = array();
-		$this->certificates = array();
+        $this->certificates = array();
 
         if ($xml === NULL) return;
 
         $this->xml = $xml;
-		
-		$sig = SAMLUtilities::validateElement($xml);
-		if ($sig !== FALSE) {
-			$this->certificates = $sig['Certificates'];
-			$this->signatureData = $sig;
-		}
+
+        $sig = SAMLUtilities::validateElement($xml);
+        if ($sig !== FALSE) {
+            $this->certificates = $sig['Certificates'];
+            $this->signatureData = $sig;
+        }
 
         $doc = $xml->ownerDocument;
         $xpath = new \DOMXpath($doc);
-        if(!(@$xpath->query('/saml2p:Response',$xml)))
+        if (!(@$xpath->query('/saml2p:Response', $xml)))
             $status = SAMLUtilities::xpQuery($xml, './samlp:Status/samlp:StatusCode');
         else
             $status = SAMLUtilities::xpQuery($xml, './saml2p:Status/saml2p:StatusCode');
 
         $this->statusCode = $status[0]->getAttribute('Value');
-		
-		/* set the destination from saml response */
-		if ($this->xml->hasAttribute('Destination')) {
+
+        /* set the destination from saml response */
+        if ($this->xml->hasAttribute('Destination')) {
             $this->destination = $this->xml->getAttribute('Destination');
         }
-		
-		for ($node = $this->xml->firstChild; $node !== NULL; $node = $node->nextSibling) {
-			if ($node->namespaceURI !== 'urn:oasis:names:tc:SAML:2.0:assertion')
-				continue;
-			if ($node->localName === 'Assertion' || $node->localName === 'EncryptedAssertion')
-				$this->assertions[] = new Assertion($node);
-		}
+
+        for ($node = $this->xml->firstChild; $node !== NULL; $node = $node->nextSibling) {
+            if ($node->namespaceURI !== 'urn:oasis:names:tc:SAML:2.0:assertion')
+                continue;
+            if ($node->localName === 'Assertion' || $node->localName === 'EncryptedAssertion')
+                $this->assertions[] = new Assertion($node);
+        }
     }
 
     /** Retrieve the assertions in this response.  */
