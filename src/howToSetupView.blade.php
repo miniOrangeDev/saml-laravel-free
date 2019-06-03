@@ -115,7 +115,23 @@
                         </ul>
                         <img src="miniorange/sso/resources/images/setup_4.png"
                              style="width: 600px; height: 400px; margin-left: 50px; border: 1px solid;">
-                        <br/> <br/>
+                        <br/><br/>
+                        <h4>Step 4:</h4>
+                        <ul>
+                            <li>Your users can initiate the Single Sign On flow by clicking on the login button generated on your login page. If you do not have this page yet, run <i>php artisan make:auth</i> & <i>php artisan migrate</i> to generate the authentication module.
+                            </li>
+                        </ul>
+                        <img src="miniorange/sso/resources/images/setup_5.png"
+                             style="width: 800px; height: 380px; margin-left: 50px; border: 1px solid;">
+                        <br/><br/>
+                        <ul>
+                            <li>You can create your own Single Sign On link. Make sure it redirects you to the SSO link : <b><?php echo $_SERVER['HTTP_HOST'].'/login.php';?></b>. Refer to the example given below : </li>
+                            <code style="font-size: 17px">
+
+                                        &lta href="login.php"&gtSingle Sign On&lt/a&gt
+
+                            </code>
+                        </ul>
                     </div>
                     </form>
                 </div>

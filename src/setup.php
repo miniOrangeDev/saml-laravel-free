@@ -61,9 +61,9 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
         $saml_x509_certificate = sanitize_certificate($_POST['x509_certificate']);
 
         $sp_base_url = trim($_POST['site_base_url']);
-        $sp_entity_id = trim($_POST['sp_entity_id']);
-        $acs_url = trim($_POST['acs_url']);
-        $single_logout_url = trim($_POST['slo_url']);
+        $sp_entity_id = $sp_base_url.'/miniorange_php_saml_connector';
+        $acs_url = $sp_base_url.'/sso.php';
+        $single_logout_url = $sp_base_url.'/logout.php';
         $relaystate_url = trim($_POST['relaystate_url']);
 
         DB::update_option('saml_identity_name', $saml_identity_name);
