@@ -82,11 +82,6 @@ $verified = mo_saml_is_customer_registered() ? '' : 'disabled';
             <div class="tile">
                 <div class="row">
                     <div class="col-lg-10">
-                        <?php if ($verified == 'disabled') { ?> <p style="color: red;">
-                            <b>Please login with your miniOrange account in the <a href="licensing.php">Licensing</a>
-                                tab to activate the support form.</b>
-                        </p> <?php } ?>
-                        <fieldset <?php echo $verified; ?> >
                             <form method="post" action="support.php">
                                 <p>
                                     <b>Need any help or want to upgrade to premium? We can help you in configuring the
