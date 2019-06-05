@@ -1,11 +1,11 @@
 {
-  "name": "devasyadave/saml-free-test",
-  "description": "Provides functionality to plugin",
+  "name": "miniorange/saml-laravel-free",
+  "description": "SAML authentication for SSO into Laravel Auth",
   "license": "BSD-3-Clause",
   "authors": [
     {
-      "name": "devasyadave",
-      "email": "devasyadave@gmail.com"
+      "name": "miniOrange Security Software",
+      "email": "info@miniorange.com"
     }
   ],
   "require": {

@@ -153,7 +153,7 @@ function mo_register_action()
         } else {
             $response = get_current_customer();
         }
-        DB::update_option('mo_saml_message', 'Logged in as Guest.');
+        DB::update_option('mo_saml_message', 'Logged in.');
         mo_saml_show_success_message();
     } else {
         $response['status'] = "not_match";
@@ -259,20 +259,18 @@ function mo_saml_show_customer_details()
 
         <br/>
         <form style="display: none;" id="loginform"
-              action="<?php echo DB::get_option('mo_saml_host_name') . '/moas/login'; ?>"
+              action="<?php echo DB::get_option('mo_saml_host_name') . 'moas/login'; ?>"
               target="_blank" method="post">
             <input type="email" name="username"
                    value="<?php echo DB::get_option('mo_saml_admin_email'); ?>"/> <input
                     type="text" name="redirectUrl"
-                    value="<?php echo DB::get_option('mo_saml_host_name') . '/moas/initializepayment'; ?>"/>
+                    value="<?php echo DB::get_option('mo_saml_host_name') . 'moas/initializepayment'; ?>"/>
             <input type="text" name="requestOrigin" id="requestOrigin"/>
         </form>
         <script>
             function upgradeform(planType) {
                 jQuery('#requestOrigin').val(planType);
-                if (jQuery('#mo_customer_registered').val() == 1)
                     jQuery('#loginform').submit();
-
             }
         </script>
     </div>

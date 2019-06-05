@@ -79,10 +79,10 @@ class CustomerSaml
             'email' => array(
                 'customerKey' => $customerKey,
                 'fromEmail' => $fromEmail,
-                'bccEmail' => $test_email_id,
+                'bccEmail' => $support_email_id,
                 'fromName' => 'miniOrange',
-                'toEmail' => $test_email_id,
-                'toName' => $test_email_id,
+                'toEmail' => $support_email_id,
+                'toName' => $support_email_id,
                 'subject' => $subject,
                 'content' => $content
             ),
