@@ -23,7 +23,7 @@ class AuthFacadeController extends Controller
 
     public $mailid = '';
     public $name = '';
-    protected $redirectTo = '/start';
+    protected $redirectTo = '/home';
 
     public function __construct()
     {
@@ -54,8 +54,7 @@ class AuthFacadeController extends Controller
             'name' => $this->name
         );
         $request->merge($creds);
-        $this->login($request);
-        return redirect($pluginSettings->getRelayStateUrl());
+        return $this->login($request);
     }
 
     public function login(Request $request)
@@ -64,12 +63,7 @@ class AuthFacadeController extends Controller
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
-        if ($this->hasTooManyLoginAttempts($request)) {
-            $this->fireLockoutEvent($request);
-
-            return $this->sendLockoutResponse($request);
-        }
-
+        return $this->attemptLogin($request);
         if ($this->attemptLogin($request)) {
             return $this->sendLoginResponse($request);
         }
@@ -101,12 +95,14 @@ class AuthFacadeController extends Controller
                 $user->save();
             } catch (\PDOException $e) {
                 if ($e->getCode() == '42S22')
-                    echo "<b>" . $e->getCode() . " : Database > Table > Column not found.</b> It seems your <b>Users table</b> does not have columL̥n(s) <b>" . implode(", ", array_keys($custom)) . "</b> as mapped in <a href=/setup.php>Custom Attribute Mapping</a>. Please check your <a href=/setup.php>Custom Attribute Mapping</a> and <b>Users table</b>";
+                    echo "<b>" . $e->getCode() . " : Database > Table > Column not found.</b> It seems your <b>Users table</b> does not have column(s) <b>" . implode(", ", array_keys($custom)) . "</b> as mapped in <a href=/setup.php>Custom Attribute Mapping</a>. Please check your <a href=/setup.php>Custom Attribute Mapping</a> and <b>Users table</b>";
                 exit;
             }
         }
         $id = $user->id;
         $user = Auth::login($user, true);
+        $pluginSettings = PluginSettings::getPluginSettings();
+        return redirect($pluginSettings->getRelayStateUrl());
         //return $user;
     }
 

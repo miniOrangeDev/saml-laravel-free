@@ -61,10 +61,34 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
         $saml_x509_certificate = sanitize_certificate($_POST['x509_certificate']);
 
         $sp_base_url = trim($_POST['site_base_url']);
+        while(substr($sp_base_url, -1) == "/"){
+            $sp_base_url = substr($sp_base_url,0,-1);
+        }
         $sp_entity_id = $sp_base_url.'/miniorange_php_saml_connector';
         $acs_url = $sp_base_url.'/sso.php';
         $single_logout_url = $sp_base_url.'/logout.php';
         $relaystate_url = trim($_POST['relaystate_url']);
+        if(!filter_var($sp_base_url, FILTER_VALIDATE_URL)){
+            DB::update_option('mo_saml_message', "Invalid SP Base URL");
+            mo_saml_show_error_message();
+            return;
+        }
+
+        if(!filter_var($acs_url, FILTER_VALIDATE_URL)){
+            DB::update_option('mo_saml_message', "Invalid ACS URL");
+            mo_saml_show_error_message();
+            return;
+        }
+        if(!filter_var($single_logout_url, FILTER_VALIDATE_URL)){
+            DB::update_option('mo_saml_message', "Invalid SP SLO URL");
+            mo_saml_show_error_message();
+            return;
+        }
+        if(!filter_var($saml_login_url, FILTER_VALIDATE_URL)){
+            DB::update_option('mo_saml_message',"Invalid SAML Login URL");
+            mo_saml_show_error_message();
+        }
+
 
         DB::update_option('saml_identity_name', $saml_identity_name);
         DB::update_option('idp_entity_id', $idp_entity_id);
