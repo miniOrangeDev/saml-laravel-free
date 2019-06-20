@@ -36,7 +36,7 @@ class CreateMiniorangeTables extends Migration
             $table->string('saml_am_username', 255)->nullable();
             $table->string('relaystate_url', 255)->nullable();
             $table->string('site_logout_url', 255)->nullable();
-            $table->string('saml_x509_certificate', 1500)->nullable();
+            $table->text('saml_x509_certificate', 5000)->nullable();
             $table->string('mo_saml_new_registration', 10)->nullable();
             $table->string('mo_saml_admin_phone', 20)->nullable();
             $table->string('mo_saml_verify_customer', 10)->nullable();
