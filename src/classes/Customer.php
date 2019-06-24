@@ -52,7 +52,7 @@ class CustomerSaml
     function submit_contact_us($email, $phone, $query)
     {
 
-        $url = 'https://auth.miniorange.com/moas/api/notify/send';
+        $url = 'https://login.xecurify.com/moas/api/notify/send';
         $ch = curl_init($url);
 
         $customerKey = "16555";

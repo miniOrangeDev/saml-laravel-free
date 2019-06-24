@@ -386,7 +386,7 @@ function mo_saml_show_verify_password_page()
             <div id="panel1">
                 <p><b>It seems you already have an account with miniOrange. Please enter your miniOrange email
                         and password.<br/> <a target="_blank"
-                                              href="https://auth.miniorange.com/moas/idp/resetpassword">Click
+                                              href="https://login.xecurify.com/moas/idp/resetpassword">Click
                             here if you forgot your password?</a></b></p>
                 <br/>
                 <div class="col-lg-8">

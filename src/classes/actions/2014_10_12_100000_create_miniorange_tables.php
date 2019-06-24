@@ -58,7 +58,7 @@ class CreateMiniorangeTables extends Migration
         foreach ($tables as $table) {
             DB::statement('ALTER TABLE ' . $table . ' ENGINE = InnoDB');
         }
-        DB::statement("INSERT INTO mo_config(id,mo_saml_host_name,mo_saml_new_registration) VALUES('1','https://auth.miniorange.com/','true')");
+        DB::statement("INSERT INTO mo_config(id,mo_saml_host_name,mo_saml_new_registration) VALUES('1','https://login.xecurify.com/','true')");
         DB::insert('insert into mo_admin (id) values (1)');
     }
 
