@@ -19,19 +19,22 @@ if (isset($_SERVER['REQUEST_URI'])) {
     if ($_SERVER['REQUEST_URI'] == '/login') {
         // for generating a login button on login page
         echo '<script>
-                window.onload = function() { addSsoButton() };
-                function addSsoButton() {
-                var ele = document.createElement("button");
-                ele.className = "btn btn-primary";
-                ele.innerHTML = "Single Sign On";
-                ele.name = "sso_button";
-                ele.id = "sso_button";
-                ele.style ="margin-left:44%";
-                ele.onclick = function() {window.location.replace("/login.php")};
-                document.body.appendChild(ele);
+                    window.onload = function() { addSsoButton() }
+                    function addSsoButton() {
+                    // check if the SSO button already exist on page, if so dont add this generated button...
+                    if(!document.getElementById("sso_button")){
+                        var ele = document.createElement("button");
+                        ele.className = "btn btn-primary";
+                        ele.innerHTML = "Single Sign On";
+                        ele.name = "sso_button";
+                        ele.id = "sso_button";
+                        ele.style ="margin-left:44%";
+                        ele.onclick = function() {window.location.replace("/login.php")};
+                        document.body.appendChild(ele);
+                    }
                 }
-
                 </script>';
+
     }
 }
 
