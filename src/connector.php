@@ -19,22 +19,19 @@ if (isset($_SERVER['REQUEST_URI'])) {
     if ($_SERVER['REQUEST_URI'] == '/login') {
         // for generating a login button on login page
         echo '<script>
-                    window.onload = function() { addSsoButton() }
-                    function addSsoButton() {
-                    // check if the SSO button already exist on page, if so dont add this generated button...
-                    if(!document.getElementById("sso_button")){
-                        var ele = document.createElement("button");
-                        ele.className = "btn btn-primary";
-                        ele.innerHTML = "Single Sign On";
-                        ele.name = "sso_button";
-                        ele.id = "sso_button";
-                        ele.style ="margin-left:44%";
-                        ele.onclick = function() {window.location.replace("/login.php")};
-                        document.body.appendChild(ele);
-                    }
+                window.onload = function() { addSsoButton() };
+                function addSsoButton() {
+                var ele = document.createElement("button");
+                ele.className = "btn btn-primary";
+                ele.innerHTML = "Single Sign On";
+                ele.name = "sso_button";
+                ele.id = "sso_button";
+                ele.style ="margin-left:44%";
+                ele.onclick = function() {window.location.replace("/login.php")};
+                document.body.appendChild(ele);
                 }
-                </script>';
 
+                </script>';
     }
 }
 
@@ -68,7 +65,6 @@ function mo_saml_show_success_message()
     if (isset($_SESSION['show_error_msg']))
         unset($_SESSION['show_error_msg']);
     if (!isset($_SESSION)) {
-        session_id('connector');
         session_start();
     }
     $_SESSION['show_success_msg'] = 1;
@@ -79,7 +75,6 @@ function mo_saml_show_error_message()
     if (isset($_SESSION['show_success_msg']))
         unset($_SESSION['show_success_msg']);
     if (!isset($_SESSION)) {
-        session_id('connector');
         session_start();
     }
     $_SESSION['show_error_msg'] = 1;
@@ -207,11 +202,7 @@ function get_current_customer()
         DB::update_option('mo_saml_admin_api_key', $customerKey['apiKey']);
         DB::update_option('mo_saml_customer_token', $customerKey['token']);
         DB::update_option('mo_saml_admin_password', '');
-        $certificate = DB::get_option('saml_x509_certificate');
-        if (empty($certificate)) {
-            DB::update_option('mo_saml_free_version', 1);
-        }
-
+        DB::update_option('mo_saml_free_version', 1);
         DB::delete_option('mo_saml_verify_customer');
         DB::delete_option('mo_saml_new_registration');
         $response['status'] = "success";
@@ -254,7 +245,7 @@ function mo_saml_show_customer_details()
                     </form>
                 </td>
                 <td>
-                    <a href="#"><input type="button" class="btn btn-primary" onclick="upgradeform('laravel_')"
+                    <a href="#"><input type="button" class="btn btn-primary" onclick="upgradeform('laravel_saml_premium_plan')"
                                        value="Upgrade to Premium"/></a>
                 </td>
             </tr>

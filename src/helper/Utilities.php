@@ -140,8 +140,6 @@ class Utilities
     public static function isSPConfigured()
     {
         $pluginSettings = PluginSettings::getPluginSettings();
-        $certSet = !self::isBlank($pluginSettings->getX509Certificate())
-            && strpos($pluginSettings->getX509Certificate(), "<") === false;
         $samlLoginUrlSet = !self::isBlank($pluginSettings->getSamlLoginUrl())
             && strpos($pluginSettings->getSamlLoginUrl(), "<") === false;
         $acsUrlSet = !self::isBlank($pluginSettings->getAcsUrl())
@@ -151,7 +149,7 @@ class Utilities
         $idpEntityIDSet = !self::isBlank($pluginSettings->getIdpEntityId())
             && strpos($pluginSettings->getIdpEntityId(), "<") === false;
 
-        return $certSet && $samlLoginUrlSet && $acsUrlSet && $entityIDSet && $idpEntityIDSet;
+        return $samlLoginUrlSet && $acsUrlSet && $entityIDSet && $idpEntityIDSet;
     }
 
     /**

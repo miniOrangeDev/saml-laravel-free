@@ -79,29 +79,31 @@
                     <div class="col-lg-10">
                         <h3>Follow these steps to setup the plugin:</h3>
                         <h4>Step 1:</h4>
-                        <p>
-                            In <b>Plugin Settings</b>, use your Identity Provider details to
-                            configure the plugin
-                        </p>
-                        <img src="miniorange/sso/resources/images/setup_1.png"
-                             style="width: 800px; height: 380px; margin-left: 50px; border: 1px solid;">
-                        <br/> <br/>
-                        <h4>Step 2:</h4>
                         <ul>
-                            <li>Configure the plugin using the Service Provider details.</li>
-                            <li>You need to provide these <b>SP Entity ID</b>, <b>ACS URL</b>
-                                and <b>Single Logout URL</b> values while configuring your
+                            <li>You can configure the SP Base URL or leave this option as it is.</li>
+                            <li>You need to provide these <b>SP Entity ID</b> and <b>ACS URL</b>
+                                values while configuring your
                                 Identity Provider
                             </li>
-                            <li>Click on the <b>Save</b> button to save your configuration.
-                            </li>
+                    
                         </ul>
                         <img src="miniorange/sso/resources/images/setup_2.png"
                              style="width: 800px; height: 380px; margin-left: 50px; border: 1px solid;">
                         <br/> <br/>
+                        <h4>Step 2:</h4>
+                        <ul>
+                            <li>Use your Identity Provider details to
+                            configure the plugin.</li>
+                        </ul>
+                        <img src="miniorange/sso/resources/images/setup_1.png"
+                             style="width: 800px; height: 380px; margin-left: 50px; border: 1px solid;"><br/><br/>
+                        <ul>
+                            <li>Click on the <b>Save</b> button to save your configuration.</li>
+                        </ul>     
+                        
                         <h4>Step 3:</h4>
                         <ul>
-                            <li>You can test if the plugin configured properly or not by
+                            <li>You can test if the plugin is configured properly or not by
                                 clicking on the <b>Test Configuration</b> button.
                             </li>
                         </ul>

@@ -24,7 +24,7 @@ $verified = mo_saml_is_customer_registered() ? '' : 'disabled';
         <li class="dropdown"><a class="app-nav__item" href="#"
                                 data-toggle="dropdown" aria-label="Open Profile Menu"><i
                         class="fa fa-user fa-lg"><span
-                            style="margin-left: 5px"><?php  DB::get_registered_user()->email; ?></span><span
+                            style="margin-left: 5px"><?php echo DB::get_registered_user()->email; ?></span><span
                             style="padding-left: 5px;"><i class="fa fa-caret-down"></i></span></i></a>
             <ul class="dropdown-menu settings-menu dropdown-menu-right">
                 <li><a class="dropdown-item" href="admin_logout.php"><i

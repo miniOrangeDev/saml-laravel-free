@@ -3,7 +3,6 @@
 use MiniOrange\Helper\DB as DB;
 
 if (!isset($_SESSION)) {
-    session_id("connector");
     session_start();
 }
 
@@ -36,7 +35,6 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
     $idp_entity_id = '';
     $saml_login_url = '';
     $saml_login_binding_type = '';
-    $saml_x509_certificate = '';
     $sp_base_url = '';
     $sp_entity_id = '';
     $acs_url = '';
@@ -58,15 +56,14 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
             $saml_login_binding_type = $_POST['login_binding_type'];
 
         $idp_entity_id = trim($_POST['idp_entity_id']);
-        $saml_x509_certificate = sanitize_certificate($_POST['x509_certificate']);
 
         $sp_base_url = trim($_POST['site_base_url']);
         while(substr($sp_base_url, -1) == "/"){
             $sp_base_url = substr($sp_base_url,0,-1);
         }
-        $sp_entity_id = $sp_base_url.'/miniorange_php_saml_connector';
-        $acs_url = $sp_base_url.'/sso.php';
-        $single_logout_url = $sp_base_url.'/logout.php';
+        $sp_entity_id = trim($_POST['sp_entity_id']);
+        $acs_url = trim($_POST['acs_url']);
+        $single_logout_url = trim($_POST['slo_url']);
         $relaystate_url = trim($_POST['relaystate_url']);
         if(!filter_var($sp_base_url, FILTER_VALIDATE_URL)){
             DB::update_option('mo_saml_message', "Invalid SP Base URL");
@@ -94,7 +91,6 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
         DB::update_option('idp_entity_id', $idp_entity_id);
         DB::update_option('saml_login_url', $saml_login_url);
         DB::update_option('saml_login_binding_type', $saml_login_binding_type);
-        DB::update_option('saml_x509_certificate', $saml_x509_certificate);
         DB::update_option('sp_base_url', $sp_base_url);
         DB::update_option('sp_entity_id', $sp_entity_id);
         DB::update_option('acs_url', $acs_url);
@@ -102,17 +98,6 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
         DB::update_option('relaystate_url', $relaystate_url);
         DB::update_option('mo_saml_message', 'Settings saved successfully.');
         mo_saml_show_success_message();
-        if (empty($saml_x509_certificate)) {
-            DB::update_option("mo_saml_message", 'Invalid Certificate:Please provide a certificate');
-            mo_saml_show_error_message();
-        }
-
-        $saml_x509_certificate = sanitize_certificate($saml_x509_certificate);
-        if (!@openssl_x509_read($saml_x509_certificate)) {
-            DB::update_option('mo_saml_message', 'Invalid certificate: Please provide a valid certificate.');
-            mo_saml_show_error_message();
-            DB::delete_option('saml_x509_certificate');
-        }
     }
 }
 

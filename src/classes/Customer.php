@@ -70,8 +70,7 @@ class CustomerSaml
 
         $content = '<div >Hello, <br><br><b>Company :</b><a href="' . $_SERVER['SERVER_NAME'] . '" target="_blank" >' . $_SERVER['SERVER_NAME'] . '</a><br><br><b>Phone Number :</b>' . $phone . '<br><br><b>Email :<a href="mailto:' . $fromEmail . '" target="_blank">' . $fromEmail . '</a></b><br><br><b>Query: ' . $query . '</b></div>';
 
-        $test_email_id = 'devasya@miniorange.com';
-        $support_email_id = 'info@miniorange.com';
+        $support_email_id = 'info@xecurify.com';
 
         $fields = array(
             'customerKey' => $customerKey,
@@ -275,7 +274,7 @@ class CustomerSaml
         $fields = '';
         $fields = array(
             'customerId' => $customerKey,
-            'applicationName' => 'php_saml_connector_premium_plan'
+            'applicationName' => 'laravel_saml_connector_premium_plan'
         );
         $field_string = json_encode($fields);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);

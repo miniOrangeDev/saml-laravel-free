@@ -1,11 +1,11 @@
 {
   "name": "miniorange/saml-laravel-free",
-  "description": "SAML authentication for SSO into Laravel Auth",
+  "description": "miniOrange SAML Single Sign on (SSO) plugin acts as a SAML Service Provider which can be configured to establish the trust between the plugin and a SAML capable Identity Providers to securely authenticate the user to the Laravel site. We support all known IdPs – ADFS, Azure AD, Google Apps, Okta, Salesforce, Shibboleth, SimpleSAMLphp, OpenAM, Centrify, Ping, RSA, IBM, Oracle, OneLogin, Bitium, WSO2, NetIQ etc.",
   "license": "BSD-3-Clause",
   "authors": [
     {
       "name": "miniOrange Security Software",
-      "email": "info@miniorange.com"
+      "email": "info@xecurify.com"
     }
   ],
   "require": {

@@ -38,7 +38,6 @@ final class SSO
                     (new TestResultActions($attrs))->execute(); // show test results
                 } else {
                     (new ProcessUserAction($attrs, $relayStateUrl, $sessionIndex))->execute(); // process user action
-                    session_id('attributes');
                     session_start();
                     $_SESSION['email'] = $attrs['NameID'];
                     $_SESSION['username'] = $attrs['NameID'];

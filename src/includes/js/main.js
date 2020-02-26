@@ -1,6 +1,7 @@
 jQuery(document).ready(function () {
-    jQuery("#signing_info").click(function () {
-        jQuery("#signing_help_desc").slideToggle(400);
+
+    jQuery("#protect_site_help").click(function () {
+        jQuery("#protect_site_help_desc").slideToggle(400);
     });
 
     jQuery("#relaystate_url_help").click(function () {
@@ -11,16 +12,9 @@ jQuery(document).ready(function () {
         jQuery("#sp_certificate_help_desc").slideToggle(400);
     });
 
-    $("#download_sp_cert").click(function (e) {
-        e.preventDefault();
-        window.location.href = 'miniorange/sso/resources/sp-certificate.crt';
-    });
-
     jQuery("#logout_url_help").click(function () {
         jQuery("#logout_url_help_desc").slideToggle(400);
     });
-
-
 });
 
 $(function () {

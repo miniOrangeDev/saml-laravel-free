@@ -8,7 +8,6 @@
 use MiniOrange\Helper\DB as DB;
 
 if (!isset($_SESSION)) {
-    session_id('connector');
     session_start();
 }
 // check if the directory containing CSS,JS,Resources exists in the root folder of the site
@@ -40,7 +39,7 @@ try {
     exit;
 }
 
-if (session_id() == 'connector' || session_id() == 'attributes') {
+if (isset($_SESSION)) {
     if (is_user_registered() == NULL) {
         header("Location: register.php");
         exit();

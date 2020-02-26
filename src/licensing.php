@@ -3,7 +3,6 @@
 use MiniOrange\Helper\DB as DB;
 
 if (!isset($_SESSION)) {
-    session_id("connector");
     session_start();
 }
 if (!isset($_SESSION['authorized'])) {
@@ -87,10 +86,7 @@ if (isset($_POST['option']) and $_POST['option'] == "mo_saml_verify_customer") {
         DB::update_option('mo_saml_admin_customer_key', $customerKey['id']);
         DB::update_option('mo_saml_admin_api_key', $customerKey['apiKey']);
         DB::update_option('mo_saml_customer_token', $customerKey['token']);
-        $certificate = DB::get_option('saml_x509_certificate');
-        if (empty($certificate)) {
-            DB::update_option('mo_saml_free_version', 1);
-        }
+        DB::update_option('mo_saml_free_version', 1);
         DB::update_option('mo_saml_admin_password', '');
         DB::update_option('mo_saml_message', 'Customer retrieved successfully');
         DB::update_option('mo_saml_registration_status', 'Existing User');

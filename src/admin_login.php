@@ -3,7 +3,6 @@
 use MiniOrange\Helper\DB as DB;
 
 if (!isset($_SESSION)) {
-    session_id("connector");
     session_start();
 }
 // Check db connection by getting registered user

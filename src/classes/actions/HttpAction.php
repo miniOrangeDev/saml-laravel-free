@@ -49,18 +49,10 @@ class HttpAction
      */
     public function sendHTTPRedirectRequest($samlRequest, $sendRelayState, $idpUrl)
     {
-        $samlRequest = "SAMLRequest=" . $samlRequest . "&RelayState=" . urlencode($sendRelayState) . '&SigAlg=' . urlencode(XMLSecurityKey::RSA_SHA256);
-        $param = array(
-            'type' => 'private'
-        );
-        $key = new XMLSecurityKey(XMLSecurityKey::RSA_SHA256, $param);
-        $certFilePath = file_get_contents(Utilities::getResourceDir() . DIRECTORY_SEPARATOR . 'sp-key.key');
-        $key->loadKey($certFilePath);
-        $signature = $key->signData($samlRequest);
-        $signature = base64_encode($signature);
+        $samlRequest = "SAMLRequest=" . $samlRequest . "&RelayState=" . urlencode($sendRelayState);
         $redirect = $idpUrl;
         $redirect .= strpos($idpUrl, '?') !== false ? '&' : '?';
-        $redirect .= $samlRequest . '&Signature=' . urlencode($signature);
+        $redirect .= $samlRequest;
         header('Location: ' . $redirect);
         exit();
     }

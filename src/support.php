@@ -8,7 +8,6 @@ if (!class_exists("DB")) {
 }
 include_once 'connector.php';
 if (!isset($_SESSION)) {
-    session_id("connector");
     session_start();
 }
 if (!isset($_SESSION['authorized'])) {

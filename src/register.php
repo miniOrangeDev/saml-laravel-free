@@ -3,7 +3,6 @@
 use MiniOrange\Helper\DB;
 
 if (!isset($_SESSION)) {
-    session_id("connector");
     session_start();
 }
 $data_folder = __DIR__ . '\helper\data';
@@ -24,7 +23,7 @@ if (isset($_POST['option']) && !empty($_POST['option'])) {
         DB::register_user($email, $password);
     }
 }
-if (session_id() == 'connector') {
+if (isset($_SESSION)) {
     if (is_user_registered()) {
         header('Location: admin_login.php');
         exit();

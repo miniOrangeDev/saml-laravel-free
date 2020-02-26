@@ -33,11 +33,12 @@
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 
 <aside class="app-sidebar">
-    <div class="app-sidebar__user" style="padding-left:40px"><img src="miniorange/sso/resources/images/miniorange.png"
-                                                                  style="width:37.25px; height:50px;" alt="User Image">
+    <div class="app-sidebar__user" style="padding-left:9%">
+        <img src="miniorange/sso/resources/images/miniorange.png"
+             style="width:37.25px; height:50px;" alt="User Image">
         <div style="margin-left:15px;">
-            <p class="app-sidebar__user-name">PHP SAML</p>
-            <p class="app-sidebar__user-designation">Connector</p>
+            <p class="app-sidebar__user-name">Laravel SSO SP</p>
+            <p class="app-sidebar__user-designation">Plugin</p>
         </div>
     </div>
     <ul class="app-menu">
@@ -74,7 +75,7 @@
                 <div class="row">
                     <div class="col-lg-10">
                         <input type="hidden" value="" id="mo_customer_registered">
-                        <h5>You are using Free version of PHP SAML Connector.</h5>
+                        <h5>You are using Free version of Laravel SAML Connector.</h5>
                         <br/>
                         <div id="pricing_container" style="text-align:center; padding-bottom:30px;">
                             <h3 style="margin-left:180px"><b>Licensing Plans:</b></h3>
@@ -98,7 +99,7 @@
                                         <p>&nbsp</p>
                                         <p>&nbsp</p>
                                         <p>&nbsp</p>
-
+                                        <p>&nbsp</p>
 
                                         <hr>
                                         <h4>Basic Email Support</h4>
@@ -128,10 +129,10 @@
                                                 })
                                             }
                                         </script>
-                                        <br>
+                                        
+                                        <h4>$449</h4>
                                         <a class="btn btn-large" id="upgrade_button"
                                            style="background-color:#f7934c;color:#fff" href="#customer">Upgrade</a>
-                                        <br>
                                         <br>
                                         <hr>
                                         <p>Unlimited Authentications</p>
@@ -139,10 +140,11 @@
                                         <p>Custom Application URL and Site Logout URL</p>
                                         <p>SSO button on Login page</p>
                                         <p>Custom Attribute mapping</p>
+                                        <p>Signed Request</p>
+                                        <p>Signed Response and Assertion</p>
+                                        <p>Protect Complete Site and Auto-Redirect</p>
                                         <p>Configurable SAML request binding type</p>
                                         <p>SAML Single Logout</p>
-                                        <p>Force Authentication and Auto-Redirect</p>
-                                        <p>Signed Response and Assertion</p>
                                         <hr>
                                         <h4>Premium Support</h4>
                                         <br/>

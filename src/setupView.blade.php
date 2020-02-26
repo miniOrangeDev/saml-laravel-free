@@ -156,10 +156,12 @@
 
 
                             <div class="form-group">
-                                <label for="x509_certificate"><b>SAML x509 Certificate</b></label>
+                                <label for="x509_certificate"><b>SAML x509 Certificate</b>
+                                <h6 class="premium-indicator">
+                                        Available in Premium Version</h6></label>
                                 <textarea class="form-control" id="x509_certificate"
                                           name="x509_certificate" rows="5"
-                                          required><?php echo DB::get_option('saml_x509_certificate');?></textarea>
+                                          disabled></textarea><br>
                                 <small><b>NOTE:</b> Format of the certificate:<br/> <b>-----BEGIN
                                         CERTIFICATE-----<br/>XXXXXXXXXXXXXXXXXXXXXXXXXXX<br/>-----END
                                         CERTIFICATE-----
@@ -167,32 +169,31 @@
                                 <br/>
                             </div>
 
-                            <div class="form-group">
-                                <label for="signing_info"><b>Signing</b></label>
-                                <p>
-                                    Supports both Signed Assertion and Signed Response<i
-                                            class="fa fa-question-circle" id="signing_info"
-                                            style="padding-left: 5px;"></i><br/>
-
-
-                                <div style="display: none;" class="help_desc"
-                                     id="signing_help_desc">Please make sure that your Identity
-                                    Provider sign atleast one of them.
-                                </div>
-                                </p>
-                            </div>
                             <div class="animated-checkbox">
-                                <label> <input type="checkbox" id="force_authn"
-                                               name="force_authn" disabled><span
-                                            class="label-text">Force Authentication</span> <h6
+                                <label> <input type="checkbox" id="signed_response"
+                                               name="signed_response" disabled><span
+                                            class="label-text">Signed Response</span> <h6
                                             class="premium-indicator">Available in Premium Version</h6>
                                 </label>&nbsp
 
                             </div>
+
+                            <div class="animated-checkbox">
+                                <label> <input type="checkbox" id="signed_assertion"
+                                               name="signed_assertion" disabled><span
+                                            class="label-text">Signed Assertion</span> <h6
+                                            class="premium-indicator">Available in Premium Version</h6>
+                                </label>&nbsp
+
+                            </div>
+
                             <div class="animated-checkbox">
                                 <label> <input type="checkbox" id="force_sso" name="force_sso" disabled><span
-                                            class="label-text">Force Single Sign On</span> <h6
-                                            class="premium-indicator">Available in Premium Version</h6>
+                                            class="label-text">Protect Complete Site</span> <i class="fa fa-question-circle" id="protect_site_help"></i> <h6
+                                            class="premium-indicator">Available in Premium Version</h6><br/>
+                                            <div class="help_desc" id="protect_site_help_desc"
+                                         style="display: none;"><span>Restrict the site to logged in users only.</span>
+                                    </div>
                                 </label>&nbsp
                                 <input hidden="true" id="saml_submit"
                                        type="submit">
@@ -224,7 +225,7 @@
                                     $base_url = DB::get_option('sp_base_url');
                                 } else {
                                     $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-                                    $base_url = str_replace("setup.php", "", $actual_link);
+                                    $base_url = str_replace("/setup.php", "", $actual_link);
                                 }
                                 echo ' value= "' . $base_url . '" ';
 
@@ -236,7 +237,7 @@
                                     class="form-control" id="sp_entity_id" name="sp_entity_id"
                                     type="text" readonly=""
                             <?php
-                                $entity_id = $base_url . '/miniorange_php_saml_connector';
+                                $entity_id = $base_url . '/miniorange_laravel_saml_connector';
                                 echo ' value="' . $entity_id . '" ';
                                 ?>>
                         </div>
@@ -252,7 +253,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="slo_url"><b>SINGLE LOGOUT URL</b> <h6 class="premium-indicator">Available in
+                            <label for="slo_url"><b>Single Logout URL</b> <h6 class="premium-indicator">Available in
                                     Premium Version</h6></label> <input
                                     class="form-control" id="slo_url" name="slo_url" type="text"
                                     readonly=""
@@ -289,10 +290,9 @@
                                     ?>>
                                 <br>
                                 <div class="form-group">
-                                    <label><b>SP Certificate:</b></label> <a
-                                            style="padding-left: 5px;" href="#" id="download_sp_cert">Download</a><i
+                                    <label><b>SP Certificate</b></label><i
                                             class="fa fa-question-circle" id="sp_certificate_help"
-                                            style="padding-left: 5px;"></i> <br/>
+                                            style="padding-left: 5px;"></i> <h6 class="premium-indicator">Available in Premium Version</h6><br/>
                                     <div class="help_desc" id="sp_certificate_help_desc"
                                          style="display: none;">Provide this certificate to your
                                         Identity Provider for encryption or signing.
