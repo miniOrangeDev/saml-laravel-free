@@ -12,6 +12,7 @@ class DatabaseController extends Controller
     public function createTables()
     {
         $migration_path = explode('vendor', __DIR__, 2)[1];
+        
         echo "Setting up database for MiniOrange SAML SP for Laravel...<br>";
         try {
             Artisan::call('migrate:refresh', array(
@@ -24,7 +25,7 @@ class DatabaseController extends Controller
             echo "Could not create tables. Please check your Database Configuration and Connection and try again.";
             exit();
         }
-        echo "Tables created successfully. You will be redirected in about 5 seconds.";
-        header("refresh:6;url=mo_admin");
+        header('Location: mo_admin');
+        exit();
     }
 }

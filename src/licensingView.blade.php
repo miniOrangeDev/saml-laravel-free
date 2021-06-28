@@ -91,16 +91,17 @@
                                         <h4 style="padding-top:20px;margin-bottom:45px;">$0</h4>
                                         <hr>
                                         <p>Unlimited Authentications</p>
+                                        <p>Auto Create 10 users</p>
                                         <p>Configurable SP Base URL</p>
-                                        <p>Custom Application URL</p>
-                                        <p>SSO button on Login page</p>
-                                        <p>Standard Attribute Mapping(Only NameID)</p>
+                                        <p>SSO button on Login page and SSO link</p>
+                                        <p>Basic Attribute Mapping (NameID only)</p>
+                                        <p>Step-by-step guide to setup IDP</p>
                                         <p>&nbsp</p>
                                         <p>&nbsp</p>
                                         <p>&nbsp</p>
                                         <p>&nbsp</p>
                                         <p>&nbsp</p>
-
+                                        <p>&nbsp</p>
                                         <hr>
                                         <h4>Basic Email Support</h4>
                                         <br/>
@@ -130,23 +131,25 @@
                                             }
                                         </script>
                                         
-                                        <h4>$449</h4>
+                                        <h4>$549</h4>
                                         <a class="btn btn-large" id="upgrade_button"
                                            style="background-color:#f7934c;color:#fff" href="#customer">Upgrade</a>
                                         <br>
                                         <hr>
                                         <p>Unlimited Authentications</p>
+                                        <p>Auto Create unlimited users</p>
                                         <p>Configurable SP Base URL</p>
-                                        <p>Custom Application URL and Site Logout URL</p>
-                                        <p>SSO button on Login page</p>
-                                        <p>Custom Attribute mapping</p>
+                                        <p>SSO button on Login page and SSO link</p>
+                                        <p>Advanced Attribute mapping</p>
+                                        <p>Step-by-step guide to setup IDP</p>
+                                        <p>Relay state URL and Site Logout URL</p>
                                         <p>Signed Request</p>
                                         <p>Signed Response and Assertion</p>
                                         <p>Protect Complete Site and Auto-Redirect</p>
                                         <p>Configurable SAML request binding type</p>
                                         <p>SAML Single Logout</p>
                                         <hr>
-                                        <h4>Premium Support</h4>
+                                        <h4>Support plans on demand</h4>
                                         <br/>
                                     </div>
                                 </div>

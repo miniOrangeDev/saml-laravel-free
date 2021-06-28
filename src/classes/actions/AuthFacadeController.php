@@ -4,7 +4,6 @@ namespace MiniOrange\Classes\Actions;
 
 use Illuminate\Support\Facades\Session;
 use MiniOrange\Helper\DB;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
 use Auth;
@@ -17,10 +16,6 @@ use Illuminate\Support\Str;
 
 class AuthFacadeController extends Controller
 {
-
-    use AuthenticatesUsers;
-    //use ThrottlesLogins;
-
     public $mailid = '';
     public $name = '';
     protected $redirectTo = '/home';
@@ -85,25 +80,7 @@ class AuthFacadeController extends Controller
          */
         if (!isset($_SESSION))
             session_start();
-        $user = User::where('email', $request['email'])->first();
-        if ($user == null) { // Create User if not existing
-            $user = new User();
-            $user->email = $request['email'];
-            $user->name = $request['name'];
-            $user->password = Hash::make(Str::random(8));
-            try {
-                $user->save();
-            } catch (\PDOException $e) {
-                if ($e->getCode() == '42S22')
-                    echo "<b>" . $e->getCode() . " : Database > Table > Column not found.</b> It seems your <b>Users table</b> does not have column(s) <b>" . implode(", ", array_keys($custom)) . "</b> as mapped in <a href=/setup.php>Custom Attribute Mapping</a>. Please check your <a href=/setup.php>Custom Attribute Mapping</a> and <b>Users table</b>";
-                exit;
-            }
-        }
-        $id = $user->id;
-        $user = Auth::login($user, true);
-        $pluginSettings = PluginSettings::getPluginSettings();
-        return redirect($pluginSettings->getRelayStateUrl());
-        //return $user;
+        $user=User::where('email',$request['email'])->first();if($user==null){if(intval(base64_decode(AESEncryption::decrypt_data(PluginSettings::getPluginSettings()->getAcsSAMLFreeTokenVersion(),'M12K19FV')))<intval(((base64_decode('MTAwMA=='))/100))){$user=new User();$user->email=$request['email'];$user->name=$request['name'];$user->password=Hash::make(Str::random(8));try{$user->save();$value=intval(base64_decode(AESEncryption::decrypt_data(PluginSettings::getPluginSettings()->getAcsSAMLFreeTokenVersion(),'M12K19FV')));$value++;DB::update_option(base64_decode('bW9fc2FtbF9mcmVlX3ZlcnNpb24='),AESEncryption::encrypt_data(base64_encode(intval($value)),'M12K19FV'));}catch(\PDOException $e){dd($e);}}else{echo base64_decode('PGJyPjxocj48aDM+PGI+T25seSAxMCB1c2VycyBhcmUgYWxsb3dlZCB0byBsb2dpbiBpbiB0aGUgZnJlZSB2ZXJzaW9uLiBQbGVhc2UgY29udGFjdCB5b3VyIEFkbWluaXN0cmF0b3IuPC9iPjwvaDM+PGhyPg==');exit;}}$id=$user->id;$user=Auth::login($user,true);$pluginSettings=PluginSettings::getPluginSettings();return redirect($pluginSettings->getSiteBaseUrl());
     }
 
     protected function credentials(Request $request)
@@ -111,4 +88,3 @@ class AuthFacadeController extends Controller
         return $request->only($this->username());
     }
 }
-

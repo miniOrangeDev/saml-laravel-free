@@ -95,17 +95,6 @@ class DB extends Controller
                 exit;
             }
         }
-//        catch (\Exception $e) {
-//            $code = $e->getCode();
-//            $msg = $e->getMessage();
-//            $trace = $e->getTraceAsString();
-//            //echo " $code \r\n $msg \r\n $trace";
-//            //$env_connection = getenv('DB_CONNECTION');
-//            $env_database = getenv('DB_DATABASE');
-//            $env_host = getenv('DB_HOST');
-//            var_dump($env_database, $env_host);
-//            xiet;
-//        }
         if (empty($result->email))
             return null;
         else

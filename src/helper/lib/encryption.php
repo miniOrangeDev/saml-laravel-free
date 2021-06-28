@@ -2,7 +2,7 @@
 /**
  * @package    miniOrange
  * @author       miniOrange Security Software Pvt. Ltd.
- * @license    GNU/GPLv3
+ * @license    miniOrange
  * @copyright  Copyright 2015 miniOrange. All Rights Reserved.
  *
  *
@@ -19,8 +19,9 @@ class AESEncryption
     public static function encrypt_data($data, $key)
     {
         $key = openssl_digest($key, 'sha256');
-        $method = 'AES-128-ECB';
+        $method = 'AES-128-CBC';
         $ivSize = openssl_cipher_iv_length($method);
+
         $iv = openssl_random_pseudo_bytes($ivSize);
         $strCrypt = openssl_encrypt($data, $method, $key, OPENSSL_RAW_DATA || OPENSSL_ZERO_PADDING, $iv);
         return base64_encode($iv . $strCrypt);
@@ -35,7 +36,7 @@ class AESEncryption
     {
         $strIn = base64_decode($data);
         $key = openssl_digest($key, 'sha256');
-        $method = 'AES-128-ECB';
+        $method = 'AES-128-CBC';
         $ivSize = openssl_cipher_iv_length($method);
         $iv = substr($strIn, 0, $ivSize);
         $data = substr($strIn, $ivSize);

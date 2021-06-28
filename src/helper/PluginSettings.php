@@ -26,11 +26,6 @@ class PluginSettings
         return self::$obj;
     }
 
-    public function getIdpName()
-    {
-        return DB::get_option('saml_identity_name');
-    }
-
     public function getIdpEntityId()
     {
         return DB::get_option('idp_entity_id');
@@ -71,6 +66,10 @@ class PluginSettings
         return DB::get_option('acs_url');
     }
 
+    public function getAcsSAMLFreeTokenVersion()
+    {
+        return DB::get_option('mo_saml_free_version');
+    }
 
     public function getRelayStateUrl()
     {

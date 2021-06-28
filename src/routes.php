@@ -1,96 +1,31 @@
 <?php
 
-use MiniOrange\Classes\Actions\AuthFacadeController;
+Route::get('mo_admin', 'MiniOrange\Classes\Actions\MoAdminController@launch');
 
-Route::get('mo_admin', function () {
-    include_once 'launcher.php';
-});
+Route::get('register.php', 'MiniOrange\Classes\Actions\MoRegisterController@launch');
+Route::post('register.php', 'MiniOrange\Classes\Actions\MoRegisterController@launch');
 
-Route::get('register.php', function () {
-    include_once 'register.php';
-    include_once 'jsLoader.php';
-    return view('mosaml::registerView');
-});
+Route::get('admin_login.php', 'MiniOrange\Classes\Actions\MoAdminLoginController@launch');
+Route::post('admin_login.php', 'MiniOrange\Classes\Actions\MoAdminLoginController@launch');
 
-Route::post('register.php', function () {
-    include_once 'register.php';
-    include_once 'jsLoader.php';
-    return view('mosaml::registerView');
-});
+Route::get('login.php/{RelayState?}', 'MiniOrange\Classes\Actions\MoRelayStateController@launch');
 
-Route::get('admin_login.php', function () {
-    include_once 'admin_login.php';
-    include 'jsLoader.php';
-    return view('mosaml::adminLoginView');
-});
+Route::get('licensing.php', 'MiniOrange\Classes\Actions\MoLicensingController@launch');
+Route::post('licensing.php', 'MiniOrange\Classes\Actions\MoLicensingController@launch');
 
-Route::post('admin_login.php', function () {
-    include_once 'admin_login.php';
-    include 'jsLoader.php';
-    return view('mosaml::adminLoginView');
-});
+Route::get('setup.php', 'MiniOrange\Classes\Actions\MoSetupController@launch');
+Route::post('setup.php', 'MiniOrange\Classes\Actions\MoSetupController@launch');
 
-Route::get('login.php/{RelayState?}', function ($RelayState = '/') {
+Route::post('sso.php', 'MiniOrange\Classes\Actions\MoSSOController@launch');
+Route::post('', 'MiniOrange\Classes\Actions\MoSSOController@launch');
 
-    include_once 'login.php';
-});
-Route::get('licensing.php', function () {
-    include_once 'licensing.php';
-    include 'jsLoader.php';
-    return view('mosaml::licensingView');
-});
-Route::post('licensing.php', function () {
-    include_once 'licensing.php';
-    include 'jsLoader.php';
-    return view('mosaml::licensingView');
-});
+Route::get('admin_logout.php', 'MiniOrange\Classes\Actions\MoAdminLogoutController@launch');
 
-Route::get('setup.php', function () {
-    include_once 'setup.php';
-    include_once 'jsLoader.php';
-    return view('mosaml::setupView');
-});
+Route::get('how_to_setup.php', 'MiniOrange\Classes\Actions\MoHowToSetupController@launch');
+Route::post('how_to_setup.php', 'MiniOrange\Classes\Actions\MoHowToSetupController@launch');
 
-Route::post('sso.php', function () {
-    include_once 'sso.php';
-});
-Route::post('', function () {
-    include_once 'sso.php';
-});
-Route::get('admin_logout.php', function () {
-    include_once 'admin_logout.php';
-});
-
-Route::get('how_to_setup.php', function () {
-    include_once 'how_to_setup.php';
-    include_once 'jsLoader.php';
-    return view('mosaml::howToSetupView');
-});
-
-Route::get('support.php', function () {
-    include_once 'support.php';
-    include_once 'jsLoader.php';
-    return view('mosaml::supportView');
-});
-Route::post('support.php', function () {
-    include_once 'support.php';
-    include_once 'jsLoader.php';
-    return view('mosaml::supportView');
-});
-
-
-Route::post('setup.php', function () {
-    include_once 'setup.php';
-    include_once 'jsLoader.php';
-    return view('mosaml::setupView');
-});
-
-Route::post('how_to_setup.php', function () {
-    include_once 'how_to_setup.php';
-    return view('mosaml::howToSetupView');
-});
+Route::get('support.php', 'MiniOrange\Classes\Actions\MoSupportController@launch');
+Route::post('support.php', 'MiniOrange\Classes\Actions\MoSupportController@launch');
 
 Route::get('sign/{email?}', 'MiniOrange\Classes\Actions\AuthFacadeController@signin');
 Route::get('create_tables', 'MiniOrange\Classes\Actions\DatabaseController@createTables');
-
-

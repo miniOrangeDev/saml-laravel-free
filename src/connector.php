@@ -175,7 +175,6 @@ function create_customer()
         DB::update_option('mo_saml_admin_customer_key', $customerKey['id']);
         DB::update_option('mo_saml_admin_api_key', $customerKey['apiKey']);
         DB::update_option('mo_saml_customer_token', $customerKey['token']);
-        DB::update_option('mo_saml_free_version', 1);
         DB::update_option('mo_saml_admin_password', '');
         DB::update_option('mo_saml_message', 'Thank you for registering with miniorange.');
         DB::update_option('mo_saml_registration_status', '');
@@ -202,7 +201,6 @@ function get_current_customer()
         DB::update_option('mo_saml_admin_api_key', $customerKey['apiKey']);
         DB::update_option('mo_saml_customer_token', $customerKey['token']);
         DB::update_option('mo_saml_admin_password', '');
-        DB::update_option('mo_saml_free_version', 1);
         DB::delete_option('mo_saml_verify_customer');
         DB::delete_option('mo_saml_new_registration');
         $response['status'] = "success";

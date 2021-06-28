@@ -120,9 +120,14 @@
                         <br/><br/>
                         <h4>Step 4:</h4>
                         <ul>
-                            <li>Your users can initiate the Single Sign On flow by clicking on the login button generated on your login page. If you do not have this page yet, run <i>php artisan make:auth</i> & <i>php artisan migrate</i> to generate the authentication module.
+                            <li>Your users can initiate the Single Sign On flow by clicking on the login button generated on your login page. If you do not have this page yet, run the below commands to generate the authentication module:<br><br>
+                            composer require laravel/ui<br>
+                            php artisan ui vue --auth<br>
+                            npm install && npm run dev<br>
+                            php artisan migrate
                             </li>
                         </ul>
+
                         <img src="miniorange/sso/resources/images/setup_5.png"
                              style="width: 800px; height: 380px; margin-left: 50px; border: 1px solid;">
                         <br/><br/>

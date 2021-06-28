@@ -74,6 +74,25 @@
             </h1>
 
         </div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <table >
+            <form method="post" action="" enctype="multipart/form-data">
+                <input type="hidden" name="option" value="save_metadata_file">
+                <tr align="right">
+                    <td align="left">
+                        <b>Upload metadata: &nbsp;&nbsp;</b>
+                    </td>
+                   <td colspan="2" align="right"><input type="file" name="metadata_file" width="10%">
+                    </td>
+                    <td align="left"><input type="submit" name="Upload" value="Upload" class="btn btn-md btn-primary "></td>
+
+                </tr>
+                
+                
+            </form>
+            
+        </table>
+            
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
             <li class="breadcrumb-item"><a href="#">Plugin Settings</a></li>
@@ -90,14 +109,6 @@
                                    value="save_connector_settings">
                             <h4>Identity Provider Settings</h4>
                             <br>
-                            <div class="form-group">
-                                <label for="idp_name"><b>Identity Provider Name</b></label> <input
-                                        class="form-control" name="idp_name" id="idp_name" type="text"
-                                        required
-                                <?php
-                                    echo ' value="' . DB::get_option('saml_identity_name') . '" ';
-                                    ?>>
-                            </div>
                             <div class="form-group">
                                 <label for="idp_entity_id"><b>IDP Entity ID</b></label> <input
                                         class="form-control" name="idp_entity_id" id="idp_entity_id"
@@ -265,16 +276,14 @@
                         <div class="form-group">
                             <label><b>RelayState URL</b>
                                 <i class="fa fa-question-circle" id="relaystate_url_help"></i>
+                                <h6 class="premium-indicator">Available in Premium Version</h6>
                                 <div style="display: none" class="help_desc"
                                      id="relaystate_url_help_desc">
 										<span>The users will be redirected to this URL after logging
 											in.</span>
                                 </div>
-                            </label> <input class="form-control"
-                                            name="relaystate_url" id="relaystate_url" type="text"
-                            <?php
-                                echo ' value="' . DB::get_option('relaystate_url') . '" ';
-                                ?>>
+                            </label> <input disabled class="form-control"
+                                            name="relaystate_url" id="relaystate_url" type="text">
                             <div class="form-group">
                                 <label><b>Site Logout URL</b> <i class="fa fa-question-circle" id="logout_url_help"></i>
                                     <h6 class="premium-indicator">Available in Premium Version</h6>
@@ -284,10 +293,7 @@
                                     </div>
                                 </label> <input disabled
                                                 class="form-control" name="site_logout_url"
-                                                id="site_logout_url" type="text"
-                                <?php
-                                    echo ' value="' . DB::get_option('site_logout_url') . '" ';
-                                    ?>>
+                                                id="site_logout_url" type="text">
                                 <br>
                                 <div class="form-group">
                                     <label><b>SP Certificate</b></label><i
@@ -307,7 +313,7 @@
                                     <form id="attrs_form" method="post" action="setup.php">
                                         <input type="hidden" name="option" value="attribute_mapping">
                                         <div class="form-group">
-                                            <label for="saml_am_email"><b>EMAIL</b></label> <input
+                                            <label for="saml_am_email"><b>Email</b></label> <input
                                                     class="form-control" id="saml_am_email" name="saml_am_email"
                                                     type="text"
                                                     value="NameID">
@@ -315,7 +321,7 @@
 
 
                                         <div class="form-group">
-                                            <label for="saml_am_username"><b>NAME</b></label> <input
+                                            <label for="saml_am_username"><b>Name</b></label> <input
                                                     class="form-control" id="saml_am_username"
                                                     name="saml_am_username" type="text"
                                                     value="NameID">

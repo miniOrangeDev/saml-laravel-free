@@ -5,9 +5,7 @@ use MiniOrange\Helper\DB;
 if (!isset($_SESSION)) {
     session_start();
 }
-$data_folder = __DIR__ . '\helper\data';
-if (!file_exists($data_folder))
-    mkdir($data_folder);
+
 if (isset($_POST['option']) && !empty($_POST['option'])) {
 
     $email = '';
