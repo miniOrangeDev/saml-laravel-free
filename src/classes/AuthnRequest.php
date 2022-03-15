@@ -51,8 +51,8 @@ class AuthnRequest
                                 xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" 
                                 xmlns="urn:oasis:names:tc:SAML:2.0:assertion" ID="' . SAMLUtilities::generateID() .
             '"  Version="2.0" IssueInstant="' . SAMLUtilities::generateTimestamp() . '"';
-        $requestXmlStr .= ' WantAssertionSigned="true"';
-        $requestXmlStr .= ' WantSAMLResponseSigned="true"';
+      //  $requestXmlStr .= ' WantAssertionSigned="true"';
+      //  $requestXmlStr .= ' WantSAMLResponseSigned="true"';
         $requestXmlStr .= '     ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" AssertionConsumerServiceURL="' . $this->acsUrl .
             '"      Destination="' . $this->destination . '">
                                 <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">' . $this->issuer . '</saml:Issuer>
