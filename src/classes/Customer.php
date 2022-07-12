@@ -70,7 +70,7 @@ class CustomerSaml
 
         $content = '<div >Hello, <br><br><b>Company :</b><a href="' . $_SERVER['SERVER_NAME'] . '" target="_blank" >' . $_SERVER['SERVER_NAME'] . '</a><br><br><b>Phone Number :</b>' . $phone . '<br><br><b>Email :<a href="mailto:' . $fromEmail . '" target="_blank">' . $fromEmail . '</a></b><br><br><b>Query: ' . $query . '</b></div>';
 
-        $support_email_id = 'info@xecurify.com';
+        $support_email_id = 'laravelsupport@xecurify.com';
 
         $fields = array(
             'customerKey' => $customerKey,
