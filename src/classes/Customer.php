@@ -49,9 +49,7 @@ class CustomerSaml
         return $content;
     }
 
-    function submit_contact_us($email, $phone, $query)
-    {
-
+    function send_support_email($subject, $content){
         $url = 'https://login.xecurify.com/moas/api/notify/send';
         $ch = curl_init($url);
 
@@ -65,10 +63,6 @@ class CustomerSaml
         $customerKeyHeader = "Customer-Key: " . $customerKey;
         $timestampHeader = "Timestamp: " . number_format($currentTimeInMillis, 0, '', '');
         $authorizationHeader = "Authorization: " . $hashValue;
-        $fromEmail = $email;
-        $subject = "Laravel SAML free Support Query - " . $email;
-
-        $content = '<div >Hello, <br><br><b>Company :</b><a href="' . $_SERVER['SERVER_NAME'] . '" target="_blank" >' . $_SERVER['SERVER_NAME'] . '</a><br><br><b>Phone Number :</b>' . $phone . '<br><br><b>Email :<a href="mailto:' . $fromEmail . '" target="_blank">' . $fromEmail . '</a></b><br><br><b>Query: ' . $query . '</b></div>';
 
         $support_email_id = 'laravelsupport@xecurify.com';
 
@@ -77,7 +71,6 @@ class CustomerSaml
             'sendEmail' => true,
             'email' => array(
                 'customerKey' => $customerKey,
-                'fromEmail' => $fromEmail,
                 'bccEmail' => $support_email_id,
                 'fromName' => 'miniOrange',
                 'toEmail' => $support_email_id,
@@ -108,6 +101,26 @@ class CustomerSaml
         }
 
         curl_close($ch);
+    }
+    function submit_contact_us($email, $phone, $query)
+    {
+        $fromEmail = $email;
+        $subject = "Laravel SAML free Support Query - " . $email;
+
+        $content = '<div >Hello, <br><br><b>Company :</b><a href="' . $_SERVER['SERVER_NAME'] . '" target="_blank" >' . $_SERVER['SERVER_NAME'] . '</a><br><br><b>Phone Number :</b>' . $phone . '<br><br><b>Email :<a href="mailto:' . $fromEmail . '" target="_blank">' . $fromEmail . '</a></b><br><br><b>Query: ' . $query . '</b></div>';
+
+        $this->send_support_email($subject, $content);
+
+        return true;
+    }
+    function submit_register_user($email, $use_case)
+    {
+        $fromEmail = $email;
+        $subject = "Laravel SAML free Customer Registration - " . $email;
+
+        $content = '<div >Hello, <br><br><b>Company :</b><a href="' . $_SERVER['SERVER_NAME'] . '" target="_blank" >' . $_SERVER['SERVER_NAME'] . '</a><br><br><b>Email :<a href="mailto:' . $fromEmail . '" target="_blank">' . $fromEmail . '</a></b><br><br><b>Use Case: ' . $use_case . '</b></div>';
+
+        $this->send_support_email($subject, $content);
 
         return true;
     }
@@ -153,12 +166,15 @@ class CustomerSaml
     function get_customer_key()
     {
         $url = DB::get_option('mo_saml_host_name') . "/moas/rest/customer/key";
-        //echo $url;exit;
         $ch = curl_init($url);
+        
         $email = DB::get_option("mo_saml_admin_email");
-
         $password = DB::get_option("mo_saml_admin_password");
-
+        
+        if($email === '' || $email === NULL){
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+        }
         $fields = array(
             'email' => $email,
             'password' => $password

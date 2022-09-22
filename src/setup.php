@@ -231,8 +231,11 @@ try {
     echo nl2br("$code \n $msg  \n DB_CONNECTION : $env_con \n DB_DATABASE : $env_db \n DB_HOST : $env_host\n If the above configuration report is empty or incomplete, run <b>php artisan config:clear</b> in your command-line, check your <b>.env</b> file and please try again.  \n\nTRACE : \n $trace");
     exit;
 }
-if((isset($_POST['option']) && $_POST['option']=='save_metadata_file') && isset($_POST['Upload']) && (isset($_FILES['metadata_file']) && $_FILES['metadata_file']['error']==0)){
-
+if((isset($_POST['option']) && $_POST['option']=='saml_metadata_download')){
+        download_metadata(true);
+    
+}
+if((isset($_POST['option']) && $_POST['option']=='saml_metadata_upload') && isset($_POST['Upload']) && (isset($_FILES['metadata_file']) && $_FILES['metadata_file']['error']==0)){
     if ( ! empty( $_FILES['metadata_file']['tmp_name'] ) ) {
                 $file = @file_get_contents( $_FILES['metadata_file']['tmp_name'] );
         } 
@@ -245,10 +248,42 @@ if((isset($_POST['option']) && $_POST['option']=='save_metadata_file') && isset(
 
     }
     if(!is_null($file))
-        upload_metadata( $file);
+        upload_metadata($file);
     
 }
+function download_metadata($download = false){
+    $sp_base_url = DB::get_option('sp_base_url');
+	$sp_entity_id = DB::get_option('sp_entity_id');
+    $acs_url = DB::get_option('acs_url');
+    
+    if(ob_get_contents())
+        ob_clean();
 
+    header( 'Content-Type: text/xml' );
+    if($download)
+        header('Content-Disposition: attachment; filename="Metadata.xml"');
+    echo '<?xml version="1.0"?>
+    <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" validUntil="2023-10-28T23:59:59Z" cacheDuration="PT1446808792S" entityID="' . $sp_entity_id . '">
+        <md:SPSSODescriptor AuthnRequestsSigned="false" WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+            <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>
+            <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="' . $acs_url . '" index="1"/>
+        </md:SPSSODescriptor>
+        <md:Organization>
+            <md:OrganizationName xml:lang="en-US">miniOrange</md:OrganizationName>
+            <md:OrganizationDisplayName xml:lang="en-US">miniOrange</md:OrganizationDisplayName>
+            <md:OrganizationURL xml:lang="en-US">http://miniorange.com</md:OrganizationURL>
+        </md:Organization>
+        <md:ContactPerson contactType="technical">
+            <md:GivenName>miniOrange</md:GivenName>
+            <md:EmailAddress>info@xecurify.com</md:EmailAddress>
+        </md:ContactPerson>
+        <md:ContactPerson contactType="support">
+            <md:GivenName>miniOrange</md:GivenName> 
+            <md:EmailAddress>info@xecurify.com</md:EmailAddress>
+        </md:ContactPerson>
+    </md:EntityDescriptor>';
+    exit;
+}
 function upload_metadata( $file) {
 
     
@@ -297,15 +332,14 @@ function upload_metadata( $file) {
     }
 }
 
-
-if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
+if (isset($_POST['option']) && $_POST['option'] == 'save_idp_connector_settings') {
+   
     $idp_entity_id = '';
     $saml_login_url = '';
     $saml_login_binding_type = '';
     $sp_base_url = '';
     $sp_entity_id = '';
     $acs_url = '';
-    $single_logout_url = '';
 
     if (mo_saml_check_empty_or_null($_POST['saml_login_url']) || mo_saml_check_empty_or_null($_POST['idp_entity_id'])) {
         DB::update_option('mo_saml_message', 'All the fields are required. Please enter valid entries.');
@@ -317,14 +351,13 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
             $saml_login_binding_type = $_POST['login_binding_type'];
 
         $idp_entity_id = trim($_POST['idp_entity_id']);
-
-        $sp_base_url = trim($_POST['site_base_url']);
+        $sp_base_url = trim($_POST['sp_base_url']);
         while(substr($sp_base_url, -1) == "/"){
             $sp_base_url = substr($sp_base_url,0,-1);
         }
-        $sp_entity_id = trim($_POST['sp_entity_id']);
-        $acs_url = trim($_POST['acs_url']);
-        $single_logout_url = trim($_POST['slo_url']);
+        $sp_entity_id = trim($_POST['sp_entity']);
+        $acs_url = trim($_POST['sp_acs_url']);
+
         if(!filter_var($sp_base_url, FILTER_VALIDATE_URL)){
             DB::update_option('mo_saml_message', "Invalid SP Base URL");
             mo_saml_show_error_message();
@@ -333,11 +366,6 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
 
         if(!filter_var($acs_url, FILTER_VALIDATE_URL)){
             DB::update_option('mo_saml_message', "Invalid ACS URL");
-            mo_saml_show_error_message();
-            return;
-        }
-        if(!filter_var($single_logout_url, FILTER_VALIDATE_URL)){
-            DB::update_option('mo_saml_message', "Invalid SP SLO URL");
             mo_saml_show_error_message();
             return;
         }
@@ -353,7 +381,6 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_connector_settings') {
         DB::update_option('sp_base_url', $sp_base_url);
         DB::update_option('sp_entity_id', $sp_entity_id);
         DB::update_option('acs_url', $acs_url);
-        DB::update_option('single_logout_url', $single_logout_url);
         DB::update_option('mo_saml_message', 'Settings saved successfully.');
         mo_saml_show_success_message();
     }

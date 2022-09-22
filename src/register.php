@@ -18,13 +18,23 @@ if (isset($_POST['option']) && !empty($_POST['option'])) {
         $password = sha1($password);
     }
     if ($_POST['option'] === 'register') {
-        DB::register_user($email, $password);
+        $response = mo_register_action();
+        if( isset($response['status']) && $response['status'] === 'error' ) {
+            $_SESSION['show_error_msg'] = true;
+        } else{
+            DB::register_user($email, $password);
+        }
     }
 }
 if (isset($_SESSION)) {
     if (is_user_registered()) {
-        header('Location: admin_login.php');
-        exit();
+        $_SESSION['authorized'] = true;
+        if (isset($_SESSION['authorized']) && !empty($_SESSION['authorized'])) {
+            if ($_SESSION['authorized'] == true) {
+                header('Location: setup.php');
+                exit;
+            }
+        }
     }
 }
 ?>

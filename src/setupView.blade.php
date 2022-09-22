@@ -72,27 +72,7 @@
             <h1>
                 <i class="fa fa-gear"></i> Plugin Settings
             </h1>
-
         </div>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <table >
-            <form method="post" action="" enctype="multipart/form-data">
-                <input type="hidden" name="option" value="save_metadata_file">
-                <tr align="right">
-                    <td align="left">
-                        <b>Upload metadata: &nbsp;&nbsp;</b>
-                    </td>
-                   <td colspan="2" align="right"><input type="file" name="metadata_file" width="10%">
-                    </td>
-                    <td align="left"><input type="submit" name="Upload" value="Upload" class="btn btn-md btn-primary "></td>
-
-                </tr>
-                
-                
-            </form>
-            
-        </table>
-            
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
             <li class="breadcrumb-item"><a href="#">Plugin Settings</a></li>
@@ -104,11 +84,27 @@
             <div class="tile">
                 <div class="row">
                     <div class="col-lg-6">
+                        <h4>Identity Provider Settings</h4>
+                        <br>
+                        <div class="form-group">
+                            <table>
+                                <form method="post" action="" enctype="multipart/form-data">
+                                    <input type="hidden" name="option" value="saml_metadata_upload">
+                                    <tr align="right">
+                                        <td align="left">
+                                            <b>Upload IdP Metadata: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                        </td>
+                                        <td colspan="2" align="right"><input type="file" name="metadata_file" width="10%">
+                                        </td>
+                                        <td align="left"><input type="submit" name="Upload" value="Upload" class="btn btn-md btn-primary "></td> 
+                                    </tr>
+                                </form>
+                            </table>
+                        </div>
                         <form method="POST" action="setup.php" id="saml_form">
                             <input type="hidden" name="option"
-                                   value="save_connector_settings">
-                            <h4>Identity Provider Settings</h4>
-                            <br>
+                                value="save_idp_connector_settings">
+                            <hr>
                             <div class="form-group">
                                 <label for="idp_entity_id"><b>IDP Entity ID</b></label> <input
                                         class="form-control" name="idp_entity_id" id="idp_entity_id"
@@ -125,7 +121,6 @@
                                     echo ' value="' . DB::get_option('saml_login_url') . '" ';
                                     ?>>
                             </div>
-
                             <label><b>SAML Login Binding type</b></label>
                             <table>
                                 <tr>
@@ -142,30 +137,22 @@
                                         </div>
                                     </td>
                                     <td style="padding: 10px;">
-
                                         <div class="animated-radio-button">
                                             <label> <input type="radio" name="login_binding_type"
                                                            id="http_post_binding" value="HttpPost" disabled><span
                                                         class="label-text">Http-Post</span>
                                                 <h6 class="premium-indicator">Available in Premium Version</h6>
                                             </label>
-
                                         </div>
-
                                     </td>
                                 </tr>
                             </table>
-
-
                             <div class="form-group">
                                 <label for="saml_logout_url"><b>SAML Logout URL</b> <h6 class="premium-indicator">
                                         Available in Premium Version</h6></label><input
                                         class="form-control" name="saml_logout_url"
                                         id="saml_logout_url" type="URL" disabled>
-
                             </div>
-
-
                             <div class="form-group">
                                 <label for="x509_certificate"><b>SAML x509 Certificate</b>
                                 <h6 class="premium-indicator">
@@ -179,25 +166,20 @@
                                     </b></small>
                                 <br/>
                             </div>
-
                             <div class="animated-checkbox">
                                 <label> <input type="checkbox" id="signed_response"
                                                name="signed_response" disabled><span
                                             class="label-text">Signed Response</span> <h6
                                             class="premium-indicator">Available in Premium Version</h6>
                                 </label>&nbsp
-
                             </div>
-
                             <div class="animated-checkbox">
                                 <label> <input type="checkbox" id="signed_assertion"
                                                name="signed_assertion" disabled><span
                                             class="label-text">Signed Assertion</span> <h6
                                             class="premium-indicator">Available in Premium Version</h6>
                                 </label>&nbsp
-
                             </div>
-
                             <div class="animated-checkbox">
                                 <label> <input type="checkbox" id="force_sso" name="force_sso" disabled><span
                                             class="label-text">Protect Complete Site</span> <i class="fa fa-question-circle" id="protect_site_help"></i> <h6
@@ -206,8 +188,20 @@
                                          style="display: none;"><span>Restrict the site to logged in users only.</span>
                                     </div>
                                 </label>&nbsp
-                                <input hidden="true" id="saml_submit"
-                                       type="submit">
+                                <input hidden="true" id="saml_submit" type="submit">
+                                <input class="form-control" name="sp_base_url" id="sp_base_url" type="text" hidden="true"
+                                <?php
+                                    echo ' value="' . DB::get_option('sp_base_url') . '" ';
+                                ?>>
+                                <input class="form-control" name="sp_entity" id="sp_entity" type="text" hidden="true"
+                                <?php
+                                    echo ' value="' . DB::get_option('sp_entity_id') . '" ';
+                                ?>>
+                                <input class="form-control" name="sp_acs_url" id="sp_acs_url" type="text" hidden="true"
+                                <?php
+                                    echo ' value="' . DB::get_option('acs_url') . '" ';
+                                ?>>
+                                
                             </div>
                             <div class="tile-footer">
                                 <button class="btn btn-primary" type="button"
@@ -222,14 +216,33 @@
                                     </button>
                                 </a>
                             </div>
-                    </div>
+                        </div>
+                    </form>
                     <div class="col-lg-4 offset-lg-1">
                         <h4>Service Provider Settings</h4>
                         <br>
                         <div class="form-group">
+                            <table>
+                                <form method="post" action="" enctype="multipart/form-data">
+                                    <input type="hidden" name="option" value="download_metadata_file">
+                                    <tr align="right">
+                                        <td align="left">
+                                            <b>Download SP Metadata: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                        </td>
+                                        <td align="left"><a type="button" name="Download" class="btn btn-md btn-primary" onclick="document.forms['saml_download_metadata_form'].submit();">Download</a></td>
+                                    </tr>
+                                </form>
+                                <form name="saml_download_metadata_form" method="post" action="">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="option" value="saml_metadata_download" />
+                                </form>
+                            </table>
+                        </div>
+                        <hr>
+                        <div class="form-group">
                             <label for="site_base_url"><b>Base URL</b></label> <input
                                     class="form-control" id="site_base_url" name="site_base_url"
-                                    type="text"
+                                    type="text" onchange="send_base_url(this.value)"
                             <?php
                                 $base_url = '';
                                 if (DB::get_option('sp_base_url')) {
@@ -239,35 +252,31 @@
                                     $base_url = str_replace("/setup.php", "", $actual_link);
                                 }
                                 echo ' value= "' . $base_url . '" ';
-
                                 ?>>
                         </div>
-
                         <div class="form-group">
                             <label for="sp_entity_id"><b>SP Entity ID</b></label> <input
                                     class="form-control" id="sp_entity_id" name="sp_entity_id"
-                                    type="text" readonly=""
+                                    type="text" readonly="" onchange="send_entity_id(this.value)"
                             <?php
                                 $entity_id = $base_url . '/miniorange_laravel_saml_connector';
                                 echo ' value="' . $entity_id . '" ';
                                 ?>>
                         </div>
-
                         <div class="form-group">
                             <label for="acs_url"><b>ACS URL</b></label> <input
                                     class="form-control" id="acs_url" name="acs_url" type="text"
-                                    readonly=""
+                                    readonly="" onchange="send_acs_url(this.value)"
                             <?php
                                 $acs = $base_url . '/sso.php';
                                 echo ' value="' . $acs . '" ';
                                 ?>>
                         </div>
-
                         <div class="form-group">
                             <label for="slo_url"><b>Single Logout URL</b> <h6 class="premium-indicator">Available in
                                     Premium Version</h6></label> <input
                                     class="form-control" id="slo_url" name="slo_url" type="text"
-                                    readonly=""
+                                    readonly="" onchange="send_slo_url(this.value)"
                             <?php
                                 $slo = $base_url . '/logout.php';
                                 echo ' value="' . $slo . '" ';
@@ -309,7 +318,6 @@
                                     <h4>Attribute Mapping</h4> <h6 class="premium-indicator">Available in Premium
                                         Version</h6>
                                     <br>
-
                                     <form id="attrs_form" method="post" action="setup.php">
                                         <input type="hidden" name="option" value="attribute_mapping">
                                         <div class="form-group">
@@ -318,15 +326,12 @@
                                                     type="text"
                                                     value="NameID">
                                         </div>
-
-
                                         <div class="form-group">
                                             <label for="saml_am_username"><b>Name</b></label> <input
                                                     class="form-control" id="saml_am_username"
                                                     name="saml_am_username" type="text"
                                                     value="NameID">
                                         </div>
-
                                         <h4>Custom Attribute Mapping</h4>
                                         <div data-role="dynamic-fields">
                                             <!-- /div.form-inline -->
@@ -353,15 +358,24 @@
                                                 name="custom_attrs" id="custom_attrs">Save Attribute Mapping
                                         </button>
                                         <!-- <button type="button" class="btn btn-primary">Add Attribute</button> -->
-
                                     </form>
                                 </fieldset>
                             </div>
 
                         </div>
+                        <script>
+                            function send_base_url(val){
+                                    document.getElementById("sp_base_url").value = val;
+                            }
+                            function send_entity_id(val){
+                                    document.getElementById("sp_entity").value = val;
+                            }
+                            function send_acs_url(val){
+                                    document.getElementById("sp_acs_url").value = val;
+                            }
+                        </script>
                         <hr>
                         <br/>
-
                         </fieldset>
                     </div>
                 </div>

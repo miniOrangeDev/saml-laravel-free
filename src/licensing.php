@@ -27,11 +27,8 @@ try {
     echo nl2br("$code \n $msg  \n DB_CONNECTION : $env_con \n DB_DATABASE : $env_db \n DB_HOST : $env_host\n If the above configuration report is empty or incomplete, run <b>php artisan config:clear</b> in your command-line, check your <b>.env</b> file and please try again.  \n\nTRACE : \n $trace");
     exit;
 }
-if (isset($_POST['option']) and $_POST['option'] == "mo_saml_register_customer") {
-    mo_register_action();
-}
 
-if (isset($_POST['option']) and $_POST['option'] == "mo_saml_goto_login") {
+if (isset($_POST['option']) and $_POST['option'] == "goto_login") {
     DB::delete_option('mo_saml_new_registration');
     DB::update_option('mo_saml_verify_customer', 'true');
 }

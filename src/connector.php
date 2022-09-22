@@ -35,11 +35,12 @@ if (isset($_SERVER['REQUEST_URI'])) {
     }
 }
 
+
 // recursive function to copy files within directory
 function recurse_copy($src, $dst)
 {
     $dir = opendir($src);
-
+    
     @mkdir($dst, 0777, true);
     while (false !== ($file = readdir($dir))) {
         if (($file != '.') && ($file != '..')) {
@@ -73,7 +74,7 @@ function mo_saml_show_success_message()
 function mo_saml_show_error_message()
 {
     if (isset($_SESSION['show_success_msg']))
-        unset($_SESSION['show_success_msg']);
+    unset($_SESSION['show_success_msg']);
     if (!isset($_SESSION)) {
         session_start();
     }
@@ -106,7 +107,7 @@ function mo_saml_is_customer_registered_saml($check_guest = true)
 {
     $email = DB::get_option('mo_saml_admin_email');
     $customerKey = DB::get_option('mo_saml_admin_customer_key');
-
+    
     if (mo_saml_is_guest_enabled() && $check_guest)
         return 1;
     if (!$email || !$customerKey || !is_numeric(trim($customerKey))) {
@@ -138,26 +139,31 @@ function mo_register_action()
 
     $email = $_POST['email'];
     $password = stripslashes($_POST['password']);
-    $confirmPassword = stripslashes($_POST['confirmPassword']);
+    $confirm_password = stripslashes($_POST['confirm_password']);
+    $use_case = $_POST['use_case'];
 
     DB::update_option('mo_saml_admin_email', $email);
-    if (strcmp($password, $confirmPassword) == 0) {
+    DB::update_option('mo_saml_use_case', $use_case);
+    if (strcmp($password, $confirm_password) == 0) {
         DB::update_option('mo_saml_admin_password', $password);
         $customer = new CustomerSaml();
         $content = json_decode($customer->check_customer(), true);
-        if (strcasecmp($content['status'], 'CUSTOMER_NOT_FOUND') == 0) {
-
-            $response = create_customer();
+        $response = create_customer();
+        if (strcasecmp($response['status'], 'success') == 0) {
+                $customer->submit_register_user($email, $use_case);
+                DB::update_option('mo_saml_message', 'Registration Successful');
+                mo_saml_show_success_message();
         } else {
-            $response = get_current_customer();
+            DB::update_option('mo_saml_admin_email', '');
+            DB::update_option('mo_saml_use_case', '');
         }
-        DB::update_option('mo_saml_message', 'Logged in.');
-        mo_saml_show_success_message();
     } else {
         $response['status'] = "not_match";
         DB::update_option('mo_saml_message', 'Passwords do not match.');
         mo_saml_show_error_message();
     }
+
+    return $response;
 }
 
 function create_customer()
@@ -165,6 +171,7 @@ function create_customer()
     $customer = new CustomerSaml();
     $customerKey = json_decode($customer->create_customer(), true);
     $response = array();
+
     if (strcasecmp($customerKey['status'], 'CUSTOMER_USERNAME_ALREADY_EXISTS') == 0) {
         $api_response = get_current_customer();
         if ($api_response) {
@@ -178,10 +185,14 @@ function create_customer()
         DB::update_option('mo_saml_admin_password', '');
         DB::update_option('mo_saml_message', 'Thank you for registering with miniorange.');
         DB::update_option('mo_saml_registration_status', '');
+        DB::update_option('mo_saml_use_case', '');
         DB::delete_option('mo_saml_verify_customer');
         DB::delete_option('mo_saml_new_registration');
         $response['status'] = "success";
         return $response;
+    } else{
+        DB::update_option('mo_saml_message', $customerKey['status']);
+        $response['status'] = "error";
     }
 
     DB::update_option('mo_saml_admin_password', '');
@@ -192,25 +203,31 @@ function get_current_customer()
 {
     $customer = new CustomerSaml();
     $content = $customer->get_customer_key();
-
-    $customerKey = json_decode($content, true);
-
-    $response = array();
-    if (json_last_error() == JSON_ERROR_NONE) {
-        DB::update_option('mo_saml_admin_customer_key', $customerKey['id']);
-        DB::update_option('mo_saml_admin_api_key', $customerKey['apiKey']);
-        DB::update_option('mo_saml_customer_token', $customerKey['token']);
-        DB::update_option('mo_saml_admin_password', '');
-        DB::delete_option('mo_saml_verify_customer');
-        DB::delete_option('mo_saml_new_registration');
-        $response['status'] = "success";
-        return $response;
-    } else {
-
-        DB::update_option('mo_saml_message', 'You already have an account with miniOrange. Please enter a valid password.');
-        mo_saml_show_error_message();
+    
+    if(strcasecmp($content, 'Invalid username or password. Please try again.') == 0){
+        DB::update_option('mo_saml_message', $content);
+        $_SESSION['show_error_msg'] = true;
         $response['status'] = "error";
-        return $response;
+    } else{
+        $customerKey = json_decode($content, true);
+        $response = array();
+        if (json_last_error() == JSON_ERROR_NONE) {
+            DB::update_option('mo_saml_admin_customer_key', $customerKey['id']);
+            DB::update_option('mo_saml_admin_api_key', $customerKey['apiKey']);
+            DB::update_option('mo_saml_customer_token', $customerKey['token']);
+            DB::update_option('mo_saml_admin_password', '');
+            DB::update_option('mo_saml_use_case', '');
+            DB::delete_option('mo_saml_verify_customer');
+            DB::delete_option('mo_saml_new_registration');
+            $response['status'] = "success";
+            return $response;
+        } else {
+    
+            DB::update_option('mo_saml_message', 'You already have an account with miniOrange. Please enter a valid password.');
+            mo_saml_show_error_message();
+            $response['status'] = "error";
+            return $response;
+        }
     }
 }
 
@@ -232,24 +249,6 @@ function mo_saml_show_customer_details()
             </tr>
         </table>
         <br/> <br/>
-
-        <table>
-            <tr>
-                <td>
-                    <form name="f1" method="post" action="licensing.php" id="mo_saml_goto_login_form"
-                          style="margin-block-end: auto;">
-                        <input type="hidden" value="change_miniorange" name="option"/> <input
-                                type="submit" value="Change miniOrange Account" class="btn btn-primary"/>
-                    </form>
-                </td>
-                <td>
-                    <a href="#"><input type="button" class="btn btn-primary" onclick="upgradeform('laravel_saml_premium_plan')"
-                                       value="Upgrade to Premium"/></a>
-                </td>
-            </tr>
-        </table>
-
-        <br/>
         <form style="display: none;" id="loginform"
               action="<?php echo DB::get_option('mo_saml_host_name') . 'moas/login'; ?>"
               target="_blank" method="post">
@@ -283,153 +282,6 @@ function mo_saml_remove_account()
     DB::delete_option('mo_saml_registration_status');
     DB::delete_option('mo_saml_idp_config_complete');
     DB::update_option('mo_saml_new_registration', true);
-}
-
-function mo_saml_show_registration_page()
-{
-    ?>
-
-    <form name="f" method="post" action="licensing.php">
-        <input type="hidden" name="option" value="mo_saml_register_customer"/>
-        <div class="mo_saml_table_layout" id="registration_div">
-            <h4>Register with miniOrange</h4>
-            <br/>
-            <h6>Why should I register?</h6>
-
-            <div style="background: aliceblue; padding: 10px 10px 10px 10px; border-radius: 10px;">
-                You should register so that in case you need help, we can help you with step by step
-                instructions. We support all known IdPs - ADFS, Okta, Salesforce, Shibboleth,
-                SimpleSAMLphp, OpenAM, Centrify, Ping, RSA, IBM, Oracle, OneLogin, Bitium, WSO2 etc.
-                <b>You will also need a miniOrange account to upgrade to the premium version of the connector.</b> We do
-                not store any information except the email that you will use to register with us.
-            </div>
-            <br/>
-            <div class="col-lg-8">
-                <table class="mo_saml_settings_table">
-                    <tr>
-                        <td><b><font color="#FF0000">*</font>Email:</b></td>
-                        <td><input class="form-control" type="email" name="email"
-                                   required placeholder="person@example.com"
-                                   value="<?php
-                                   echo DB::get_registered_user()->email == '' ? DB::get_option("mo_saml_admin_email") : DB::get_registered_user()->email;
-                                   ?>
-"/>
-                        </td>
-                    </tr>
-                    <tr>&nbsp;</tr>
-                    <tr>
-                        <td><b><font color="#FF0000">*</font>Password:</b></td>
-                        <td><input class="form-control" required type="password"
-                                   name="password" placeholder="Choose your password (Min. length 6)"
-                                   minlength="6" pattern="^[(\w)*(!@#$.%^&*-_)*]+$"
-                                   title="Minimum 6 characters should be present. Maximum 15 characters should be present. Only following symbols (!@#.$%^&*) should be present."
-                            /></td>
-                    </tr>
-                    <tr>
-                        <td><b><font color="#FF0000">*</font>Confirm Password:</b></td>
-                        <td><input class="form-control" required type="password"
-                                   name="confirmPassword" placeholder="Confirm your password"
-                                   minlength="6" pattern="^[(\w)*(!@#$.%^&*-_)*]+$"
-                                   title="Minimum 6 characters should be present. Maximum 15 characters should be present. Only following symbols (!@#.$%^&*) should be present."
-
-                            /></td>
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td><br><input type="submit" name="submit" value="Register" id="register_action"
-                                       class="btn btn-primary"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <input type="button" name="mo_saml_goto_login" id="mo_saml_goto_login"
-                                   value="Already have an account?" class="btn btn-primary"/>&nbsp;&nbsp;
-
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </form>
-    <form name="f1" method="post" action="licensing.php" id="mo_saml_goto_login_form">
-        <input type="hidden" name="option" value="mo_saml_goto_login"/>
-    </form>
-    <form name="f" method="post" action="licensing.php" id="mo_saml_continue_guest">
-        <input type="hidden" name="option" value="mo_continue_as_guest"/>
-    </form>
-
-    <!-- <form name="f2" method="post" action="" id="mo_saml_register_action_form">
-      <input type="hidden" name="option" value="mo_saml_register_action"/>
-    </form> -->
-
-    <script>
-        jQuery("#mo_saml_goto_login").click(function () {
-            jQuery("#mo_saml_goto_login_form").submit();
-        });
-    </script>
-    <?php
-}
-
-function mo_saml_show_verify_password_page()
-{
-    ?>
-    <form name="f" method="post" action="licensing.php">
-        <input type="hidden" name="option" value="mo_saml_verify_customer"/>
-        <div class="mo_saml_table_layout">
-            <div id="toggle1" class="panel_toggle">
-                <h3>Login with miniOrange</h3>
-            </div>
-            <div id="panel1">
-                <p><b>It seems you already have an account with miniOrange. Please enter your miniOrange email
-                        and password.<br/> <a target="_blank"
-                                              href="https://login.xecurify.com/moas/idp/resetpassword">Click
-                            here if you forgot your password?</a></b></p>
-                <br/>
-                <div class="col-lg-8">
-                    <table class="mo_saml_settings_table">
-                        <tr>
-                            <td><b><font color="#FF0000">*</font>Email:</b></td>
-                            <td><input class="form-control" type="email" name="email"
-                                       required placeholder="person@example.com"
-                                       value="<?php
-                                       echo DB::get_option("\x6d\x6f\137\x73\x61\x6d\154\x5f\x61\144\155\151\156\137\x65\155\x61\x69\x6c");
-                                       ?>
-"/></td>
-                        </tr>
-                        <tr>
-                            <td><b><font color="#FF0000">*</font>Password:</b></td>
-                            <td><input class="form-control" required type="password"
-                                       name="password" placeholder="Enter your password"
-                                       minlength="6" pattern="^[(\w)*(!@#$.%^&*-_)*]+$"
-                                       title="Minimum 6 characters should be present. Maximum 15 characters should be present. Only following symbols (!@#.$%^&*) should be present."
-
-                                /></td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>
-                                <input type="submit" name="submit" value="Login"
-                                       class="btn btn-primary"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="button" name="mo_saml_goback" id="mo_saml_goback" value="Back"
-                                       class="btn btn-primary"/>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </form>
-
-    <form name="f" method="post" action="" id="mo_saml_goback_form">
-        <input type="hidden" name="option" value="mo_saml_go_back"/>
-    </form>
-    <form name="f" method="post" action="" id="mo_saml_forgotpassword_form">
-        <input type="hidden" name="option" value="mo_saml_forgot_password_form_option"/>
-    </form>
-    <script>
-        jQuery("#mo_saml_goback").click(function () {
-            jQuery("#mo_saml_goback_form").submit();
-        });
-        jQuery("a[href=\"#mo_saml_forgot_password_link\"]").click(function () {
-            jQuery("#mo_saml_forgotpassword_form").submit();
-        });
-    </script>
-    <?php
 }
 
 function sanitize_certificate($certificate)

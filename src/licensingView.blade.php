@@ -133,7 +133,7 @@
                                         
                                         <h4>$549</h4>
                                         <a class="btn btn-large" id="upgrade_button"
-                                           style="background-color:#f7934c;color:#fff" href="#customer">Upgrade</a>
+                                           style="background-color:#f7934c;color:#fff" href="#" onclick="upgradeform('laravel_saml_premium_plan')">Upgrade</a>
                                         <br>
                                         <hr>
                                         <p>Unlimited Authentications</p>
@@ -160,16 +160,7 @@
                                 <div class="col-lg-12">
                                     <div id="customer">
                                         <?php
-                                        if (mo_saml_is_customer_registered()) {
-                                            mo_saml_show_customer_details();
-                                        }
-                                        if (DB::get_option("mo_saml_verify_customer") == true) {
-                                            DB::delete_option("mo_saml_new_registration");
-                                            mo_saml_show_verify_password_page();
-                                        }
-                                        if (DB::get_option("mo_saml_new_registration") == true) {
-                                            mo_saml_show_registration_page();
-                                        }
+                                        mo_saml_show_customer_details();
                                         ?>
                                     </div>
                                 </div>

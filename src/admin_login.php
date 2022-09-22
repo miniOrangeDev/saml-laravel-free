@@ -19,14 +19,10 @@ try {
     echo nl2br("$code \n $msg  \n DB_CONNECTION : $env_con \n DB_DATABASE : $env_db \n DB_HOST : $env_host\n If the above configuration report is empty or incomplete, run <b>php artisan config:clear</b> in your command-line, check your <b>.env</b> file and please try again.  \n\nTRACE : \n $trace");
     exit;
 }
-if (!is_user_registered()) {
-    header('Location: register.php');
-    exit();
-}
 
 if (isset($_SESSION['authorized']) && !empty($_SESSION['authorized'])) {
     if ($_SESSION['authorized'] == true) {
-        header('Location: licensing.php');
+        header('Location: setup.php');
     }
 }
 if (isset($_REQUEST['option']) && $_REQUEST['option'] == 'admin_login') {
@@ -47,13 +43,43 @@ if (isset($_REQUEST['option']) && $_REQUEST['option'] == 'admin_login') {
         if (isset($user->password))
             $password_check = $user->password;
         else {
-            $_SESSION['invalid_credentials'] = true;
+            $_SESSION['show_error_msg'] = true;
         }
     if ($user != NULL) {
         if (isset($user->email))
             $email_check = $user->email;
         else
-            $_SESSION['invalid_credentials'] = true;
+            $_SESSION['show_error_msg'] = true;
+    } 
+    else if($user === NULL){
+        $use_case = $_POST['use_case'];
+        $customer = new CustomerSaml();
+        $content = $customer->get_customer_key();
+        $customerKey = json_decode($content, true);
+        if($customerKey != NULL){
+            if(strcasecmp($customerKey['status'], 'SUCCESS') == 0){
+                $customer->submit_register_user($email, $use_case);
+                DB::register_user($email, $password);
+                DB::update_option('mo_saml_admin_email', $email);
+                DB::update_option('mo_saml_admin_customer_key', $customerKey['id']);
+                DB::update_option('mo_saml_use_case', $use_case);
+                $_SESSION['authorized'] = true;
+                if (isset($_SESSION['authorized']) && !empty($_SESSION['authorized'])) {
+                    if ($_SESSION['authorized'] == true) {
+                        header('Location: setup.php');
+                        exit;
+                    }
+                }
+            }
+        }
+        else{
+            if(strcasecmp($content, 'The customer is not valid ') === 0){
+                DB::update_option('mo_saml_message', 'Account does not exist. Please register');
+            } else {
+                DB::update_option('mo_saml_message', $content);
+            }
+            $_SESSION['show_error_msg'] = true;
+        }
     }
 
     if (!empty($password_check)) {
@@ -63,7 +89,7 @@ if (isset($_REQUEST['option']) && $_REQUEST['option'] == 'admin_login') {
                 $_SESSION['authorized'] = true;
             }
             $_SESSION['admin_email'] = $email;
-            header('Location: licensing.php');
+            header('Location: setup.php');
             exit;
         } else {
             $_SESSION['invalid_credentials'] = true;
