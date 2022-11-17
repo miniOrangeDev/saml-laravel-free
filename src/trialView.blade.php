@@ -1,4 +1,6 @@
-<?php use MiniOrange\Helper\DB;?>
+<?php use MiniOrange\Helper\DB;
+$verified = mo_saml_is_customer_registered() ? '' : 'disabled';
+?>
         <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +19,7 @@
 <header class="app-header">
     <a class="app-header__logo" href="#" style="margin-top: 10px;"><img
                 src="miniorange/sso/resources/images/logo-home.png"></a>
-    <!-- Sidebar toggle button -->
+    <!-- Sidebar toggle button<a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a> -->
     <ul class="app-nav">
         <li class="dropdown"><a class="app-nav__item" href="#"
                                 data-toggle="dropdown" aria-label="Open Profile Menu"><i
@@ -26,7 +28,7 @@
                             style="padding-left: 5px;"><i class="fa fa-caret-down"></i></span></i></a>
             <ul class="dropdown-menu settings-menu dropdown-menu-right">
                 <li><a class="dropdown-item" href="admin_logout.php"><i
-                                class="fa fa-sign-out fa-lg"></i>Logout</a></li>
+                                class="fa fa-sign-out fa-lg"></i> Logout</a></li>
             </ul>
         </li>
     </ul>
@@ -47,7 +49,7 @@
         <li><a class="app-menu__item" href="setup.php"><i
                         style="font-size: 20px;" class="app-menu__icon fa fa-gear"></i><span
                         class="app-menu__label"><b>Plugin Settings</b></span></a></li>
-        <li><a class="app-menu__item active" href="how_to_setup.php"><i
+        <li><a class="app-menu__item" href="how_to_setup.php"><i
                         style="font-size: 20px;" class="app-menu__icon fa fa-info-circle"></i><span
                         class="app-menu__label"><b>How to Setup?</b></span></a></li>
         <li><a class="app-menu__item" href="licensing.php"><i
@@ -56,103 +58,70 @@
         <li><a class="app-menu__item" href="support.php"><i
                         style="font-size: 20px;" class="app-menu__icon fa fa-support"></i><span
                         class="app-menu__label"><b>Support</b></span></a></li>
-        <li><a class="app-menu__item" href="trials.php"><i
+        <li><a class="app-menu__item active" href="trial.php"><i
                         style="font-size: 20px;" class="app-menu__icon fa fa-desktop"></i><span
                         class="app-menu__label"><b>Trial/Demo Request</b></span></a></li>
     </ul>
 </aside>
+
 <main class="app-content">
     <div class="app-title">
         <div>
             <h1>
-                <i class="fa fa-info-circle"></i> How to Setup?
+                <i class="fa fa-desktop"></i> Trial/Demo Request
             </h1>
 
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-            <li class="breadcrumb-item"><a href="#">How to Setup?</a></li>
+            <li class="breadcrumb-item"><a href="#">Trial/Demo Request</a></li>
         </ul>
     </div>
+
     <p id="saml_message"></p>
+
     <div class="row">
         <div class="col-md-12">
             <div class="tile">
                 <div class="row">
                     <div class="col-lg-10">
-                        <h3>Follow these steps to setup the plugin:</h3>
-                        <h4>Step 1:</h4>
-                        <ul>
-                            <li>You can configure the SP Base URL or leave this option as it is.</li>
-                            <li>You need to provide these <b>SP Entity ID</b> and <b>ACS URL</b>
-                                values while configuring your
-                                Identity Provider
-                            </li>
-                    
-                        </ul>
-                        <img src="miniorange/sso/resources/images/setup_2.png"
-                             style="width: 800px; height: 380px; margin-left: 50px; border: 1px solid;">
-                        <br/> <br/>
-                        <h4>Step 2:</h4>
-                        <ul>
-                            <li>Use your Identity Provider details to
-                            configure the plugin.</li>
-                        </ul>
-                        <img src="miniorange/sso/resources/images/setup_1.png"
-                             style="width: 800px; height: 380px; margin-left: 50px; border: 1px solid;"><br/><br/>
-                        <ul>
-                            <li>Click on the <b>Save</b> button to save your configuration.</li>
-                        </ul>     
-                        
-                        <h4>Step 3:</h4>
-                        <ul>
-                            <li>You can test if the plugin is configured properly or not by
-                                clicking on the <b>Test Configuration</b> button.
-                            </li>
-                        </ul>
-                        <img src="miniorange/sso/resources/images/setup_3.png"
-                             style="width: 800px; height: 380px; margin-left: 50px; border: 1px solid;">
-                        <ul>
-                            <br/>
-                            <li>If the configuration is correct, you should see a Test
-                                Successful screen with the user's attribute values.
-                            </li>
-                        </ul>
-                        <img src="miniorange/sso/resources/images/setup_4.png"
-                             style="width: 600px; height: 400px; margin-left: 50px; border: 1px solid;">
-                        <br/><br/>
-                        <h4>Step 4:</h4>
-                        <ul>
-                            <li>Your users can initiate the Single Sign On flow by clicking on the login button generated on your login page. If you do not have this page yet, run the below commands to generate the authentication module:<br><br>
-                            composer require laravel/ui<br>
-                            php artisan ui vue --auth<br>
-                            npm install && npm run dev<br>
-                            php artisan migrate
-                            </li>
-                        </ul>
-
-                        <img src="miniorange/sso/resources/images/setup_5.png"
-                             style="width: 800px; height: 380px; margin-left: 50px; border: 1px solid;">
-                        <br/><br/>
-                        <ul>
-                            <li>You can create your own Single Sign On link. Make sure it redirects you to the SSO link : <b><?php echo $_SERVER['HTTP_HOST'].'/login.php';?></b>. Refer to the example given below : </li>
-                            <code style="font-size: 17px">
-
-                                        &lta href="login.php"&gtSingle Sign On&lt/a&gt
-
-                            </code>
-                        </ul>
+                            <form method="post" action="trial.php">
+                                <p>
+                                    <b>Need trial/demo to test the premium features before purchasing the plan? Just send us a request and we will get back to you soon.</b>
+                                </p>
+                                <input type="hidden" name="option"
+                                       value="mo_saml_trial_request"/>
+                                <div class="form-group">
+                                    <input class="form-control" type="email"
+                                           name="mo_saml_trial_request_email" placeholder="Enter your email"
+                                           required
+                                           value="">
+                                </div>
+                                <div class="form-group">
+								<textarea class="form-control" name="mo_saml_trial_request_use_case"
+                                          required placeholder="What's your use case?"
+                                          onkeypress="mo_saml_valid_query(this)"
+                                          onkeyup="mo_saml_valid_query(this)"
+                                          onblur="mo_saml_valid_query(this)"></textarea>
+                                </div>
+                                <div class="tile-footer">
+                                    <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+                                </div>
+                            </form>
                     </div>
-                    </form>
                 </div>
+
             </div>
         </div>
     </div>
-    </div>
 </main>
 
-</body>
-</html>
+<script>
+    function mo_saml_valid_query(f) {
+        !(/^[a-zA-Z?,.\(\)\/@ 0-9]*$/).test(f.value) ? f.value = f.value.replace(
+            /[^a-zA-Z?,.\(\)\/@ 0-9]/, '') : null;
+    }
+</script>
 <?php
 use MiniOrange\Helper\DB as setupDB;
 if (isset($_SESSION['show_success_msg'])) {

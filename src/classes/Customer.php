@@ -113,6 +113,17 @@ class CustomerSaml
 
         return true;
     }
+    function submit_trial_request($email, $use_case)
+    {
+        $fromEmail = $email;
+        $subject = "Laravel SAML Trial/Demo Request - " . $email;
+
+        $content = '<div >Hello, <br><br><b>Company :</b><a href="' . $_SERVER['SERVER_NAME'] . '" target="_blank" >' . $_SERVER['SERVER_NAME'] . '</a><br><br><b>Email :<a href="mailto:' . $fromEmail . '" target="_blank">' . $fromEmail . '</a></b><br><br><b>Use Case: ' . $use_case . '</b></div>';
+
+        $this->send_support_email($subject, $content);
+
+        return true;
+    }
     function submit_register_user($email, $use_case)
     {
         $fromEmail = $email;

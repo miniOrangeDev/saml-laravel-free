@@ -27,5 +27,8 @@ Route::post('how_to_setup.php', 'MiniOrange\Classes\Actions\MoHowToSetupControll
 Route::get('support.php', 'MiniOrange\Classes\Actions\MoSupportController@launch');
 Route::post('support.php', 'MiniOrange\Classes\Actions\MoSupportController@launch');
 
+Route::get('trial.php', 'MiniOrange\Classes\Actions\MoTrialsController@launch');
+Route::post('trial.php', 'MiniOrange\Classes\Actions\MoTrialsController@launch');
+
 Route::get('sign/{email?}', 'MiniOrange\Classes\Actions\AuthFacadeController@signin');
 Route::get('create_tables', 'MiniOrange\Classes\Actions\DatabaseController@createTables');
