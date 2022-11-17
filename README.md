@@ -79,7 +79,7 @@ php artisan migrate
 ````
 The Laravel application login page should look something like this then.
 
-    ![This is laravel login page](https://plugins.miniorange.com/wp-content/uploads/2020/11/laravel-sso-button.webp)
+![This is laravel login page](https://plugins.miniorange.com/wp-content/uploads/2020/11/laravel-sso-button.webp)
 
 # Features
 The features provided in the free and premium are listed here.
