@@ -1,7 +1,7 @@
 # What is Single Sign-On (SSO)?
-**Single Sign-On** is an authorization and authentication process that enables an user to connect to multiple enterprise applications using a single set of credentials. Simply put, SSO combines multiple application login pages into just one, allowing you to submit credentials just once and gain access to all the applications without having to log in to each one individually. End users save time and effort by not having to sign into and out of a variety of on-premises, web and cloud applications on a regular basis.
+**Single Sign-On** is an authorization and authentication process that enables an user to connect to multiple enterprise applications using a single set of credentials. Simply put, SSO combines multiple application login pages into just one, allowing you to submit credentials just once and gain access to all the applications without having to log in to each one individually. End users save time and effort by not having to sign into and out of a variety of on-premises, web and cloud applications on a regular basis.
 
-SSO or single sign-on is a critical component of the Identity and Access Management or access privileges services. SSO solution perfectly implemented within an enterprise simplifies overall password management, improving productivity and security, lowering the likelihood of weak, lost, or forgotten passwords
+SSO or single sign-on is a critical component of the Identity and Access Management or access privileges services. SSO solution perfectly implemented within an enterprise simplifies overall password management, improving productivity and security, lowering the likelihood of weak, lost, or forgotten passwords
 
 # Laravel SAML SSO 
 Laravel package for SAML Single Sign On (SSO). 
@@ -15,17 +15,17 @@ We support all known IdPs - Google Apps, ADFS, Okta, miniOrange, OneLogin, Azure
 
 ## Installation - Composer
 1. Install the package via composer in your Laravel app's main directory.
-    ```
+````
 composer require miniorange/saml-laravel-free
-```
+````
 
 > Note: If you are using Laravel 5.4 or below, you will need to add the following value to the **'providers'** array in your **app.php** file which can be found in the **project\config** folder.
 >````
-'providers' => [
-    ...
-    provider\ssoServiceProvider::class,
-    ...
-]
+>'providers' => [
+>    ...
+>    provider\ssoServiceProvider::class,
+>    ...
+>]
 
 2. After successful installation of package, go to your Laravel app in the browser and enter
 
