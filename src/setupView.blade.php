@@ -62,7 +62,7 @@
         <li><a class="app-menu__item" href="support.php"><i
                         style="font-size: 20px;" class="app-menu__icon fa fa-support"></i><span
                         class="app-menu__label"><b>Support</b></span></a></li>
-        <li><a class="app-menu__item" href="trials.php"><i
+        <li><a class="app-menu__item" href="trial.php"><i
                         style="font-size: 20px;" class="app-menu__icon fa fa-desktop"></i><span
                         class="app-menu__label"><b>Trial/Demo Request</b></span></a></li>
     </ul>
@@ -196,14 +196,6 @@
                                 <?php
                                     echo ' value="' . DB::get_option('sp_base_url') . '" ';
                                 ?>>
-                                <input class="form-control" name="sp_entity" id="sp_entity" type="text" hidden="true"
-                                <?php
-                                    echo ' value="' . DB::get_option('sp_entity_id') . '" ';
-                                ?>>
-                                <input class="form-control" name="sp_acs_url" id="sp_acs_url" type="text" hidden="true"
-                                <?php
-                                    echo ' value="' . DB::get_option('acs_url') . '" ';
-                                ?>>
                                 
                             </div>
                             <div class="tile-footer">
@@ -260,7 +252,7 @@
                         <div class="form-group">
                             <label for="sp_entity_id"><b>SP Entity ID</b></label> <input
                                     class="form-control" id="sp_entity_id" name="sp_entity_id"
-                                    type="text" readonly="" onchange="send_entity_id(this.value)"
+                                    type="text" readonly=""
                             <?php
                                 $entity_id = $base_url . '/miniorange_laravel_saml_connector';
                                 echo ' value="' . $entity_id . '" ';
@@ -269,7 +261,7 @@
                         <div class="form-group">
                             <label for="acs_url"><b>ACS URL</b></label> <input
                                     class="form-control" id="acs_url" name="acs_url" type="text"
-                                    readonly="" onchange="send_acs_url(this.value)"
+                                    readonly=""
                             <?php
                                 $acs = $base_url . '/sso.php';
                                 echo ' value="' . $acs . '" ';
@@ -369,12 +361,6 @@
                         <script>
                             function send_base_url(val){
                                     document.getElementById("sp_base_url").value = val;
-                            }
-                            function send_entity_id(val){
-                                    document.getElementById("sp_entity").value = val;
-                            }
-                            function send_acs_url(val){
-                                    document.getElementById("sp_acs_url").value = val;
                             }
                         </script>
                         <hr>

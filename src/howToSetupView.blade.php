@@ -56,7 +56,7 @@
         <li><a class="app-menu__item" href="support.php"><i
                         style="font-size: 20px;" class="app-menu__icon fa fa-support"></i><span
                         class="app-menu__label"><b>Support</b></span></a></li>
-        <li><a class="app-menu__item" href="trials.php"><i
+        <li><a class="app-menu__item" href="trial.php"><i
                         style="font-size: 20px;" class="app-menu__icon fa fa-desktop"></i><span
                         class="app-menu__label"><b>Trial/Demo Request</b></span></a></li>
     </ul>

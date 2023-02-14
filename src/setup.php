@@ -355,8 +355,8 @@ if (isset($_POST['option']) && $_POST['option'] == 'save_idp_connector_settings'
         while(substr($sp_base_url, -1) == "/"){
             $sp_base_url = substr($sp_base_url,0,-1);
         }
-        $sp_entity_id = trim($_POST['sp_entity']);
-        $acs_url = trim($_POST['sp_acs_url']);
+        $sp_entity_id = $sp_base_url . '/miniorange_laravel_saml_connector';
+        $acs_url = $sp_base_url . '/sso.php';
 
         if(!filter_var($sp_base_url, FILTER_VALIDATE_URL)){
             DB::update_option('mo_saml_message', "Invalid SP Base URL");
