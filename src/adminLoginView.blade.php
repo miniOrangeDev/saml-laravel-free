@@ -40,10 +40,7 @@
                         <label class="control-label col-md-3">Password</label>
                         <div class="col-md-8">
                             <input class="form-control col-md-10" type="password"
-                                   name="password" id="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                                   placeholder="Enter your password" minlength="8" 
-                                   title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" 
-                                   required>
+                                   name="password" id="password" placeholder="Enter your password" required>
                         </div>
                     </div>
                     <div class="form-group row"  id="use_case_div">
