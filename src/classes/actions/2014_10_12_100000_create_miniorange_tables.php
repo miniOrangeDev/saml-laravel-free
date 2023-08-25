@@ -57,9 +57,6 @@ class CreateMiniorangeTables extends Migration
                 'mo_config',
                 'mo_admin'
             ];
-            foreach ($tables as $table) {
-                DB::statement('ALTER TABLE ' . $table . ' ENGINE = InnoDB');
-            }
             $sp_base_url = str_replace("/create_tables", "", (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
             $sp_entity_id = $sp_base_url . '/miniorange_laravel_saml_connector';
             $acs_url = $sp_base_url . '/sso.php';

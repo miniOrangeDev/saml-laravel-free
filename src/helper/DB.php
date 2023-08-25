@@ -22,7 +22,7 @@ class DB extends Controller
         try {
             $result = LaraDB::select('select * from mo_config where id = ?', [1])[0];
         } catch (\PDOException $e) {
-            if ($e->getCode() == '42S02') {
+            if ($e->getCode() == '42S02'|| $e->getCode() == '42P01') {
                 header('Location: create_tables');
                 exit;
             }
@@ -90,7 +90,7 @@ class DB extends Controller
         try {
             $result = LaraDB::select('select * from mo_admin')[0];
         } catch (\PDOException $e) {
-            if ($e->getCode() == '42S02') {
+            if ($e->getCode() == '42S02' || $e->getCode() == '42P01' ) {
                 header('Location: create_tables');
                 exit;
             }
