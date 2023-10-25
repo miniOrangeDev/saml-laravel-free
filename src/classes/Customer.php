@@ -10,7 +10,12 @@ class CustomerSaml
     function create_customer()
     {
 
-        $url = DB::get_option('mo_saml_host_name') . '/moas/rest/customer/add';
+        $url = DB::get_option('mo_saml_host_name');
+        if (substr($url, -1) !== '/') {
+            $url .= '/';
+        }
+
+        $url .= 'moas/rest/customer/add';
 
         $ch = curl_init($url);
         $this->email = DB::get_option('mo_saml_admin_email');
@@ -138,7 +143,12 @@ class CustomerSaml
 
     function check_customer()
     {
-        $url = DB::get_option('mo_saml_host_name') . "/moas/rest/customer/check-if-exists";
+        $url = DB::get_option('mo_saml_host_name');
+        if (substr($url, -1) !== '/') {
+            $url .= '/';
+        }
+
+        $url .= "moas/rest/customer/check-if-exists";
         $ch = curl_init($url);
         $email = DB::get_option("mo_saml_admin_email");
 
@@ -176,7 +186,12 @@ class CustomerSaml
 
     function get_customer_key()
     {
-        $url = DB::get_option('mo_saml_host_name') . "/moas/rest/customer/key";
+        $url = DB::get_option('mo_saml_host_name');
+        if (substr($url, -1) !== '/') {
+            $url .= '/';
+        }
+
+        $url .= "moas/rest/customer/key";
         $ch = curl_init($url);
         
         $email = DB::get_option("mo_saml_admin_email");
@@ -214,10 +229,21 @@ class CustomerSaml
     function mo_saml_vl($code, $active)
     {
         $url = "";
-        if ($active)
-            $url = DB::get_option('mo_saml_host_name') . '/moas/api/backupcode/check';
-        else
-            $url = DB::get_option('mo_saml_host_name') . '/moas/api/backupcode/verify';
+        if ($active) {
+            $url = DB::get_option('mo_saml_host_name');
+            if (substr($url, -1) !== '/') {
+                $url .= '/';
+            }
+            $url .= 'moas/api/backupcode/check';
+        }
+        else {
+            $url = DB::get_option('mo_saml_host_name');
+            if (substr($url, -1) !== '/') {
+                $url .= '/';
+            }
+
+            $url .= 'moas/api/backupcode/verify';
+        }
 
         $ch = curl_init($url);
 
@@ -287,7 +313,12 @@ class CustomerSaml
     function check_customer_ln()
     {
 
-        $url = DB::get_option('mo_saml_host_name') . '/moas/rest/customer/license';
+        $url = DB::get_option('mo_saml_host_name');
+        if (substr($url, -1) !== '/') {
+            $url .= '/';
+        }
+
+        $url .= 'moas/rest/customer/license';
         $ch = curl_init($url);
         $customerKey = DB::get_option('mo_saml_admin_customer_key');
 
