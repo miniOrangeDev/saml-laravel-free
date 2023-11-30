@@ -134,7 +134,7 @@
                                             }
                                         </script>
                                         
-                                        <h4>$549</h4>
+                                        <h4>$999</h4>
                                         <a class="btn btn-large" id="upgrade_button"
                                            style="background-color:#f7934c;color:#fff" href="#" onclick="upgradeform('laravel_saml_premium_plan')">Upgrade</a>
                                         <br>

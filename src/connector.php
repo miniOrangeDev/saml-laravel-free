@@ -249,19 +249,10 @@ function mo_saml_show_customer_details()
             </tr>
         </table>
         <br/> <br/>
-        <form style="display: none;" id="loginform"
-              action="<?php echo DB::get_option('mo_saml_host_name') . 'moas/login'; ?>"
-              target="_blank" method="post">
-            <input type="email" name="username"
-                   value="<?php echo DB::get_option('mo_saml_admin_email'); ?>"/> <input
-                    type="text" name="redirectUrl"
-                    value="<?php echo DB::get_option('mo_saml_host_name') . 'moas/initializepayment'; ?>"/>
-            <input type="text" name="requestOrigin" id="requestOrigin"/>
-        </form>
         <script>
             function upgradeform(planType) {
-                jQuery('#requestOrigin').val(planType);
-                    jQuery('#loginform').submit();
+                const url = `https://portal.miniorange.com/initializepayment?requestOrigin=${planType}`;            
+                window.open(url, "_blank"); 
             }
         </script>
     </div>
